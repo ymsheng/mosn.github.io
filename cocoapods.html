@@ -28,9 +28,10 @@ pod "MNFrameRate"
 <li>里面关于s.source_files，这个要注意是你开源文件的目录，不是工程所在目录，如https://github.com/ymsheng/MNFrameRate,我需面写的是s.source_files  = "FrameRate/MNFrameRate/*.{h,m}"</li>
 <li>其他几个坑：s.license="MIT",s.platform=:ios, s.source= { :git => "https://github.com/ymsheng/MNFrameRate.git", :tag => "0.0.1" }(这是自己开源项目的git地址，和##tag##版本)</li>
 <li>cocoapods为了区别版本，需要给你每次修改的开源项目打tag</li>
-$ git add -A && git commit -m "Release 0.0.1."
-$ git tag '0.0.1'
-$ git push --tags
+<div>$ git add -A && git commit -m "Release 0.0.1."<br>
+$ git tag '0.0.1'<br>
+$ git push --tags<br>
+</div>
 <li>准备完以上再执行：pod lib lint，把相关的报错都解决了，如果有问题就看上面注意的几点</li>
 <li>上面命令执行成功后，说明你的代码可以放到cocoapods上了，邮箱，自己的名字，描述；执行：pod trunk register youreamil@xx.com 'your name' --description='macbook air'</li>
 <li>在你上面命令的邮箱中找到cocoapods发你的邮件，打开相关链接</li>
