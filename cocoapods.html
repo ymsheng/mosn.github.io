@@ -18,13 +18,13 @@ pod "MNFrameRate"
 <li>执行pod install 或 pod update</li>
 <li>然后打开工程目录中的.xcworkspace文件，在Project中可以找到Pods层级</li>
 
-<h4><a href="https://cocoapods.org/#get_started">官方：https://cocoapods.org/#get_started</a></h4>
+<h4><a href="https://cocoapods.org/#get_started" target="_blank">官方：https://cocoapods.org/#get_started</a></h4>
 
 <h3>#把自己的开源项目发布到cocoapods上</h3>
 <li>首先创建自己的开源工程，然后把工程在github提交</li>
 <li>在工程目录下执行(project_name是你自己定义的开源名称)：pod spec create project_name</li>
 <li>执行完成当前目录下生成一个project_name.podspec的文件，用文本编辑器打开此文件</li>
-<li>.podspec文件可以参考；请注意他的文件内容，有些#注释的地方要放开;请参考<a href="http://studentdeng.github.io/blog/2013/09/13/cocoapods-tutorial/">项目配置例子</a></li>
+<li>.podspec文件可以参考；请注意他的文件内容，有些#注释的地方要放开;请参考<a href="http://studentdeng.github.io/blog/2013/09/13/cocoapods-tutorial/" target="_blank">项目配置例子</a></li>
 <li>里面关于s.source_files，这个要注意是你开源文件的目录，不是工程所在目录，如https://github.com/ymsheng/MNFrameRate,我需面写的是s.source_files  = "FrameRate/MNFrameRate/*.{h,m}"</li>
 <li>其他几个坑：s.license="MIT",s.platform=:ios, s.source= { :git => "https://github.com/ymsheng/MNFrameRate.git", :tag => "0.0.1" }(这是自己开源项目的git地址，和##tag##版本)</li>
 <li>cocoapods为了区别版本，需要给你每次修改的开源项目打tag</li>
@@ -40,4 +40,4 @@ $ git push --tags<br>
 <li>如果执行成功的话：pod search project_name,就可以在cocoapods上找到你项目相关</li>
 <li>现在别人也可以通过 pod "project_name"找到你的开源工程。如果上面有问题，请从#关于cocoapods相关验证自己的cocoapods是否安装正确</li>
 
-<h4><a href="https://guides.cocoapods.org/making/getting-setup-with-trunk">pod trunk官方：https://guides.cocoapods.org/making/getting-setup-with-trunk</a></h4>
+<h4><a href="https://guides.cocoapods.org/making/getting-setup-with-trunk" target="_blank">pod trunk官方：https://guides.cocoapods.org/making/getting-setup-with-trunk</a></h4>
