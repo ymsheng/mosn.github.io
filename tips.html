@@ -5,12 +5,11 @@
   <li>1.在tablview把separatorStyle 设置为 UITableViewCellSeparatorStyleNone，在自定义的cell view 底部手动加一个1像素高label</li>
   <li>2.在初始化tableview后，设置tableview.tableFooterView = [[UIView alloc] init];</li>
   </ul>
-  <br>
   <ul>
     <li>采用上面第一种方法，要注意2倍，3倍分辨率的屏幕上1像素线的画法</li>
     #define SINGLE_LINE_WIDTH (1 / [UIScreen mainScreen].scale)<br>
     #define SINGLE_LINE_ADJUST_OFFSET ((1 / [UIScreen mainScreen].scale) / 2)<br>
-    UIView *view = [[UIView alloc] initWithFrame:CGrect(x - SINGLE_LINE_ADJUST_OFFSET, 0, 320, SINGLE_LINE_WIDTH)];<br>
+    UIView *view = [[UIView alloc] initWithFrame:CGrect(x - SINGLE_LINE_ADJUST_OFFSET, 0, 320, SINGLE_LINE_WIDTH)];<br><br>
     <li>采用上面第二种方法后，需要自己维护tableview分割线的左间距，参考以下方法</li>
     -(void)dealLineWithLeftInsert:(CGFloat)insert ///insert代表左间距是多少<br>
       {<br>
@@ -23,5 +22,9 @@
         if ([self respondsToSelector:@selector(setPreservesSuperviewLayoutMargins:)])[self setPreservesSuperviewLayoutMargins:NO];<br>
       #endif<br>
     }<br>
+  </ul>
+  <ul>列表上的广告条，在一个列表展示数据的产品中，经常会在tableviewHeader有一个定时轮播的广告位(UIScrollView+NSTimer)。但是在滑动列表的时候，广告就会停止播放。
+  只要把timer加在当前的runlooph 可以确保定时器正常执行<br>
+  [[NSRunLoop currentRunLoop] addTimer:<#(NSTimer *yourTimer)#> forMode:NSRunLoopCommonModes>]
   </ul>
 </div>
