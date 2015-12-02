@@ -1,1 +1,27 @@
 <h3>iOS开发的技巧</h3>
+<div>
+  <h4>UITableView相关</h4>
+  <ul>当tableview数据源为空的时候，tableview会有多条分割线。如何消除分割线有两种
+  <li>1.在tablview把separatorStyle 设置为 UITableViewCellSeparatorStyleNone，在自定义的cell view 底部手动加一个1像素高label</li>
+  <li>2.在初始化tableview后，设置tableview.tableFooterView = [[UIView alloc] init];</li>
+  </ul>
+  <br>
+  <ul>
+    <li>采用上面第一种方法，要注意2倍，3倍分辨率的屏幕上1像素线的画法</li>
+    #define SINGLE_LINE_WIDTH (1 / [UIScreen mainScreen].scale)
+    #define SINGLE_LINE_ADJUST_OFFSET ((1 / [UIScreen mainScreen].scale) / 2)
+    UIView *view = [[UIView alloc] initWithFrame:CGrect(x - SINGLE_LINE_ADJUST_OFFSET, 0, 320, SINGLE_LINE_WIDTH)];
+    <li>采用上面第二种方法后，需要自己维护tableview分割线的左间距，参考以下方法</li>
+    -(void)dealLineWithLeftInsert:(CGFloat)insert ///insert代表左间距是多少
+      {
+      #ifdef __IPHONE_7_0
+        if ([self respondsToSelector:@selector(setSeparatorInset:)])[self setSeparatorInset:UIEdgeInsetsMake(0, insert, 0, 0)];
+      #endif
+
+      #ifdef __IPHONE_8_0
+        if ([self respondsToSelector:@selector(setLayoutMargins:)])[self setLayoutMargins:UIEdgeInsetsMake(0, insert, 0, 0)];
+        if ([self respondsToSelector:@selector(setPreservesSuperviewLayoutMargins:)])[self setPreservesSuperviewLayoutMargins:NO];
+      #endif
+    }
+  </ul>
+</div>
