@@ -32,9 +32,9 @@
   <h4>UIView相关</h4>
   <ul>
     <li>1.从view上把子视图移除</li>
-    [[self.view subviews] makeObjectsPerformSelector:@selector(removeFromSuperview) withObject:nil];<br>
+    [[self.view subviews] makeObjectsPerformSelector:@selector(removeFromSuperview) withObject:nil];<br><br>
     <li>通过设置view的背影颜色透明，不影响子视频的透明度（如果设置父view的alpha值，子view也会继承父view的alpha）</li>
-    view.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.5]; //只是颜色带alpha，但是view自己的alpha不变<br>
+    view.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.5]; //只是颜色带alpha，但是view自己的alpha不变<br><br>
     <li>view上的事件响应链</li>
     响应链 (view) A[B, C [D,E] ]---这是一个视图的嵌套关关系ABCDE代表一个view，其中D,E的父view是C；B,C的父view是A，A是controller view<br>
     当一个touch事件发生后，hit-testing是如果检测到哪个视图响应的<br>
