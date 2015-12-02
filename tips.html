@@ -28,3 +28,22 @@
   [[NSRunLoop currentRunLoop] addTimer:<#(NSTimer *yourTimer)#> forMode:NSRunLoopCommonModes>]
   </ul>
 </div>
+<div>
+  <h4>UIView相关</h4>
+  <ul>
+    <li>1.从view上把子视图移除</li>
+    [[self.view subviews] makeObjectsPerformSelector:@selector(removeFromSuperview) withObject:nil];
+    <li>通过设置view的背影颜色透明，不影响子视频的透明度（如果设置父view的alpha值，子view也会继承父view的alpha）</li>
+    view.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.5]; //只是颜色带alpha，但是view自己的alpha不变
+    <li>view上的事件响应链</li>
+    响应链 (view) A[B, C [D,E] ]---这是一个视图的嵌套关关系ABCDE代表一个view，其中D,E的父view是C；B,C的父view是A，A是controller view<br>
+    当一个touch事件发生后，hit-testing是如果检测到哪个视图响应的<br>
+    如果touch点击的时候，是点击在view E里面。则检测过程是<br>
+    1.首先是touch点在view A的bounds中，接下来检测view B和view C.<br>
+    2.检测到touch点不在view B，在view C中，接下来检测view D和view E.<br>
+    3.检测到touch点不在view D中，在view E中。<br>
+    此时hit-testing过程已经完成，view E就是hit-test View.<br>
+    响应链的起始点是，hit-test view（起点）和UIApplication对象（终点）。传递的方向就是从最上面的view向下传递，如果view是view controller的view，还会经过view controller之后在向下传递，最终到达app对象.
+    响应链：E->C->A(A是viewcontroler's View)->Window->Application
+  </ul>
+</div>
