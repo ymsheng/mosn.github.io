@@ -1,0 +1,8 @@
+<h2>黑科技</h2>
+<div>
+1.获取手机当前安装的所有App
+#include <objc/runtime.h>
+Class LSApplicationWorkspace_class = objc_getClass("LSApplicationWorkspace");
+NSObject* workspace = [LSApplicationWorkspace_class performSelector:@selector(defaultWorkspace)];
+NSLog(@"apps: %@", [workspace performSelector:@selector(allApplications)]);
+</div>
