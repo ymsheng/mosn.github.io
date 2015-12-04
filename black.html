@@ -6,7 +6,7 @@
 <ul>NSObject* workspace = [LSApplicationWorkspace_class performSelector:@selector(defaultWorkspace)];</ul>
 <ul>NSLog(@"apps: %@", [workspace performSelector:@selector(allApplications)]);</ul>
 </div>
-
+<br>
 <div>
   2.关于手机通知的震动与声音
   <ul>如果要只有震动，需要服务器发到苹果推送服务器的报文中设置sound的文件名为mute.wav（没有声音的文件），这样就只有震动了。</ul>
