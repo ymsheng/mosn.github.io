@@ -15,3 +15,10 @@
   <ul>如果后台推送只想关闭震动还要声音，这个是实现不了的。只能用户在系统设置中修改</ul>
   <ul>前三种的实现需要客户端把想要的状态发送到服务器，让服务器做判断并配置发到苹果推送服务器的报文。</ul>
 </div>
+<br>
+<div>
+  3.在LLDB调试的时候很多变量PO不出来
+  <ul>p UIScreen.mainScreen.bounds 会报error:property 'bounds' not found on object of type 'id'</ul>
+  <ul>先执行 expr @import UIKit</ul>
+  <ul>再执行 p UIScreen.mainScreen.bounds</ul>
+</div>
