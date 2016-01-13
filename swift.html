@@ -10,3 +10,12 @@
   <h4>readonly写法</h4>
   <ul>private(set) public var isConnected: Bool?</ul>
 </div>
+<div>
+  <h4>从NSData里面取整数</h4>
+  <ul>
+    <li></li>let msgData:NSData()//获取到的比特流</li>
+    <li>var i = [UInt8](count:2, repeatedValue: 0) //2代表你要获取几位数</li>
+    <li>msgData.getBytes(&i, length: 2)</li>
+    <li>Int(i[0]),Int(i[1]) 从NSData里面取出来的整数</li>
+    </ul>
+</div>
