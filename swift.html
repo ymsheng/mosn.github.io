@@ -1,6 +1,12 @@
 <h3>swift开发的技巧</h3>
 <div>
-  <h4>NSTimer</h4>
-  <ul></ul>
- 
+  <h4>NSTimer的选择器方法需要加@objc private</h4>
+  <ul>
+    <li></li>self.timer = NSTimer(fireDate: NSDate(timeIntervalSinceNow: 1), interval: 1.0, target: self, selector: "timerHandler", userInfo: nil, repeats: true)</li>
+    <li>@objc private func timerHandler() {///func detail}</li>
+  </ul>
+</div>
+<div>
+  <h4>readonly写法</h4>
+  <ul>private(set) public var isConnected: Bool?</ul>
 </div>
