@@ -44,24 +44,17 @@
 				<p class="lead blog-description">在swift学习与开发中的一些tips.</p>
 				<h4>NSTimer的选择器方法需要加@objc private</h4>
 				<p></p>
-				<pre>self.timer = NSTimer(fireDate: NSDate(timeIntervalSinceNow: 1), interval: 1.0, target: self, selector: "timerHandler", userInfo: nil, repeats: true)<br>
-					@objc private func timerHandler() {///func detail}				
+				<pre>self.timer = NSTimer(fireDate: NSDate(timeIntervalSinceNow: 1), interval: 1.0, target: self, selector: "timerHandler", userInfo: nil, repeats: true)<br>@objc private func timerHandler() {///func detail}				
 				</pre>
 				
 				<h4>readonly写法</h4>
 				<pre>private(set) public var isConnected: Bool?</pre>
 					
 				<h4>从NSData里面取整数</h4>
-				<pre>let msgData:NSData()//获取到的比特流<br>
-		       var i = [UInt8](count:2, repeatedValue: 0) //2代表你要获取几位数<br>
-		       msgData.getBytes(&i, length: 2)<br>
-		       Int(i[0]),Int(i[1]) 从NSData里面取出来的整数<br></pre>
+				<pre>let msgData:NSData()//获取到的比特流<br>var i = [UInt8](count:2, repeatedValue: 0) //2代表你要获取几位数<br>msgData.getBytes(&i, length: 2)<br>Int(i[0]),Int(i[1]) 从NSData里面取出来的整数<br></pre>
 			   
 			   <h4>字符串截取子串</h4>
-			   <pre>      let targetStr = "ABCDEFGHI" <br>
-		    	   let begin = targetStr.startIndex.advancedBy(3) //从前数三位  <br>
-		           let end = targetStr.endIndex.advancedBy(-3) ///从后数三位<br>
-		           return targetStr.substringWithRange(Range(start: begin, end: end)) //得到的子串为"DEF"
+			   <pre>let targetStr = "ABCDEFGHI" <br>let begin = targetStr.startIndex.advancedBy(3) //从前数三位  <br>let end = targetStr.endIndex.advancedBy(-3) ///从后数三位<br>return targetStr.substringWithRange(Range(start: begin, end: end)) //得到的子串为"DEF"
 			   </pre>
 			</div>
 			
