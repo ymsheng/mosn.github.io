@@ -39,34 +39,32 @@
 	       </nav>
 		
 		<div class="container" style="padding-top:64px;">
-		   <h3>swift开发的技巧</h3>
-		   <div>
-		     <h4>NSTimer的选择器方法需要加@objc private</h4>
-		     <ul>
-		       <li>self.timer = NSTimer(fireDate: NSDate(timeIntervalSinceNow: 1), interval: 1.0, target: self, selector: "timerHandler", userInfo: nil, repeats: true)</li>
-		       <li>@objc private func timerHandler() {///func detail}</li>
-		     </ul>
-		   </div>
-		   <div>
-		     <h4>readonly写法</h4>
-		     <ul>private(set) public var isConnected: Bool?</ul>
-		   </div>
-		   <div>
-		     <h4>从NSData里面取整数</h4>
-		     <ul>
-		       <li>let msgData:NSData()//获取到的比特流</li>
-		       <li>var i = [UInt8](count:2, repeatedValue: 0) //2代表你要获取几位数</li>
-		       <li>msgData.getBytes(&i, length: 2)</li>
-		       <li>Int(i[0]),Int(i[1]) 从NSData里面取出来的整数</li>
-		       </ul>
-		   </div>
-		   <div>
-		     <h4>关于字符串取子串</h4>
-		     <ul> let targetStr = "ABCDEFGHI" <br>
-		     let begin = targetStr.startIndex.advancedBy(3) //从前数三位  <br>
+			<div class="blog-header">
+				<h3 class="blog-title">swift开发的技巧</h3>
+				<p class="lead blog-description">在swift学习与开发中的一些tips.</p>
+				<h4>NSTimer的选择器方法需要加@objc private</h4>
+				<p></p>
+				<pre>self.timer = NSTimer(fireDate: NSDate(timeIntervalSinceNow: 1), interval: 1.0, target: self, selector: "timerHandler", userInfo: nil, repeats: true)<br>
+					@objc private func timerHandler() {///func detail}				
+				</pre>
+				
+				<h4>readonly写法</h4>
+				<pre>private(set) public var isConnected: Bool?</pre>
+					
+				<h4>从NSData里面取整数</h4>
+				<pre>let msgData:NSData()//获取到的比特流<br>
+		       var i = [UInt8](count:2, repeatedValue: 0) //2代表你要获取几位数<br>
+		       msgData.getBytes(&i, length: 2)<br>
+		       Int(i[0]),Int(i[1]) 从NSData里面取出来的整数<br></pre>
+			   
+			   <h4>字符串截取子串</h4>
+			   <pre>      let targetStr = "ABCDEFGHI" <br>
+		    	   let begin = targetStr.startIndex.advancedBy(3) //从前数三位  <br>
 		           let end = targetStr.endIndex.advancedBy(-3) ///从后数三位<br>
-		           return targetStr.substringWithRange(Range(start: begin, end: end)) //得到的子串为"DEF"</ul>
-		   </div>
+		           return targetStr.substringWithRange(Range(start: begin, end: end)) //得到的子串为"DEF"
+			   </pre>
+			</div>
+			
 		</div>
 	
 	
