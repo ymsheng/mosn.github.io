@@ -44,8 +44,8 @@
 			<p class="lead blog-description">iOS开发中的一些怪招.</p>
 			<h4>1.获取手机当前安装的所有App</h4>
 			<p></p>
-			<pre style="padding-bottom:40px;">#include 《objc/runtime.h》 <br>Class LSApplicationWorkspace_class = objc_getClass("LSApplicationWorkspace");<br>NSObject* workspace = [LSApplicationWorkspace_class performSelector:@selector(defaultWorkspace)];<br>NSLog(@"apps: %@", [workspace performSelector:@selector(allApplications)]);</pre>
-				
+			<pre>#include 《objc/runtime.h》 <br>Class LSApplicationWorkspace_class = objc_getClass("LSApplicationWorkspace");<br>NSObject* workspace = [LSApplicationWorkspace_class performSelector:@selector(defaultWorkspace)];<br>NSLog(@"apps: %@", [workspace performSelector:@selector(allApplications)]);</pre>
+			<br>	
 			<h4>2.关于手机通知的震动与声音</h4>
 			<p></p>
 			<ul>
@@ -55,7 +55,7 @@
 				<li>如果后台推送只想关闭震动还要声音，这个是实现不了的。只能用户在系统设置中修改</li>
 				<li>前三种的实现需要客户端把想要的状态发送到服务器，让服务器做判断并配置发到苹果推送服务器的报文。</li>
 			</ul>
-				
+			<br>	
 			<h4>3.在LLDB调试的时候很多变量PO不出来</h4>
 			<p></p>
 			<pre>p UIScreen.mainScreen.bounds 会报error:property 'bounds' not found on object of type 'id'<br>先执行 expr @import UIKit<br>再执行 p UIScreen.mainScreen.bounds<br></pre>
