@@ -1,91 +1,99 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-       <meta http-equiv="X-UA-Compatible" content="IE=edge">
-       <meta name="viewport" content="width=device-width, initial-scale=1">
-	   <link rel="shortcut icon" href="/favicon.ico">
-	   <title>mosn's blog</title>
-	   <!-- 新 Bootstrap 核心 CSS 文件 -->
-	   <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
-	   <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-	   <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-	   <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
-	   <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-	   <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<title>mosn's blog</title>
+	<!-- 新 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </head>
 
 <body>
 	<nav class="navbar navbar-inverse navbar-fixed-top">
-	    <div class="container">
-	           <div class="navbar-header">
-	             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-	               <span class="sr-only">Toggle navigation</span>
-	               <span class="icon-bar"></span>
-	               <span class="icon-bar"></span>
-	               <span class="icon-bar"></span>
-	             </button>
-	             <a class="navbar-brand" href="/index.html">mosn blog</a>
-	           </div>
-	           <div id="navbar" class="collapse navbar-collapse">
-	             <ul class="nav navbar-nav">
-	               <li><a href="/tips.html">iOS开发</a></li>
-	               <li><a href="/swift.html">swift开发</a></li>
-	               <li class="active"><a href="/cocoapods.html">CocoaPods相关</a></li>
-				   <li><a href="/black.html">黑科技</a></li>
-	             </ul>
-	           </div><!--/.nav-collapse -->
-	         </div>
-	       </nav>
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/index.html">mosn blog</a>
+			</div>
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li><a href="/tips.html">iOS开发</a></li>
+					<li><a href="/swift.html">swift开发</a></li>
+					<li class="active"><a href="/cocoapods.html">CocoaPods相关</a></li>
+					<li><a href="/black.html">黑科技</a></li>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</nav>
 		
-		<div class="container" style="padding-top:64px;">
-			<h3>#关于cocoapods相关</h3>
-			<li>CocoaPods版本检测(最新版本0.39.0): pod --version</li>
-			<li>rubygems.org的镜像变化，由之前的http://ruby.taobao.org/换成了https://ruby.taobao.org/</li>
-			<li>切换gem的源:  gem sources --add https://ruby.taobao.org/ --remove http://ruby.taobao.org/</li>
-			<li>查看电脑当前源: gem sources -l</li>
-			<li>更新gem: sudo gem update --system</li>
-			<li>安装或更新CocoaPods: sudo gem install cocoapods </li>
-			<li>设置: pod setup</li>
+	<div class="container" style="padding-top:64px;">
+			
+		<div class="blog-header">
+			<h3 class="blog-title">学习使用cocoapods相关</h3>
+			<p class="lead blog-description">现在开发依赖cocoapods越来越多，下面介绍配置与发布自己的cocoapods.</p>
+			<h4>1.配置cocoapods环境</h4>
+			<pre><ul>
+				<li>CocoaPods版本检测(最新版本0.39.0): pod --version</li>
+				<li>rubygems.org的镜像变化，由之前的http://ruby.taobao.org/换成了https://ruby.taobao.org/</li>
+				<li>切换gem的源:  gem sources --add https://ruby.taobao.org/ --remove http://ruby.taobao.org/</li>
+				<li>查看电脑当前源: gem sources -l</li>
+				<li>更新gem: sudo gem update --system</li>
+				<li>安装或更新CocoaPods: sudo gem install cocoapods </li>
+				<li>设置: pod setup</li>
+				<li>以上都执行成功后，再执行一下第一步的pod --version 检测是否是最新版本</li>
+			</ul></pre>
 
-			<h4>以上都执行成功后，再执行一下第一步的pod --version 检测是否是最新版本</h4>
-			<br><br>
-
-			<h3>#自己的工程从cocoapods导入第三方</h3>
-			<li>在你们工程目录新建一个命名为Podfile的文件;注意是先创建自己的工程，然后在.xcodeproj同级目录里新建Podfile</li>
-			<li>在Podfile里面编辑你要引入的第三方，如下是一个引入FPS监控的第三方库</li>
-			platform :ios, "6.0"
-			pod "MNFrameRate"
-			<li>执行pod install 或 pod update</li>
-			<li>然后打开工程目录中的.xcworkspace文件，在Project中可以找到Pods层级</li>
-
+			
+			<h4 style="padding-top:12px;">2.在自己的工程从cocoapods导入第三方</h4>
+			<p>a.从view上把子视图移除</p>
+			<pre><ul><li>在你们工程目录新建一个命名为Podfile的文件;注意是先创建自己的工程，然后在.xcodeproj同级目录里新建Podfile</li>
+				<li>在Podfile里面编辑你要引入的第三方，如下是一个引入FPS监控的第三方库</li>
+				platform :ios, "6.0"
+				pod "MNFrameRate"
+				<li>执行pod install 或 pod update</li>
+				<li>然后打开工程目录中的.xcworkspace文件，在Project中可以找到Pods层级</li>
+			</ul></pre>
 			<h4><a href="https://cocoapods.org/#get_started" target="_blank">官方：https://cocoapods.org/#get_started</a></h4>
 
-			<h3>#把自己的开源项目发布到cocoapods上</h3>
-			<li>首先创建自己的开源工程，然后把工程在github提交</li>
-			<li>在工程目录下执行(project_name是你自己定义的开源名称)：pod spec create project_name</li>
-			<li>执行完成当前目录下生成一个project_name.podspec的文件，用文本编辑器打开此文件</li>
-			<li>.podspec文件可以参考；请注意他的文件内容，有些#注释的地方要放开;请参考<a href="http://studentdeng.github.io/blog/2013/09/13/cocoapods-tutorial/" target="_blank">项目配置例子</a></li>
-			<li>里面关于s.source_files，这个要注意是你开源文件的目录，不是工程所在目录，如https://github.com/ymsheng/MNFrameRate,我需面写的是s.source_files  = "FrameRate/MNFrameRate/*.{h,m}"</li>
-			<li>其他几个坑：s.license="MIT",s.platform=:ios, s.source= { :git => "https://github.com/ymsheng/MNFrameRate.git", :tag => "0.0.1" }(这是自己开源项目的git地址，和##tag##版本)</li>
-			<li>cocoapods为了区别版本，需要给你每次修改的开源项目打tag</li>
-			<div>$ git add -A && git commit -m "Release 0.0.1."<br>
-			$ git tag '0.0.1'<br>
-			$ git push --tags<br>
+			<h4 style="padding-top:12px;">3.发布自己的开源项目到cocoapods上</h4>
+			<pre><ul>
+				<li>首先创建自己的开源工程，然后把工程在github提交</li>
+				<li>在工程目录下执行(project_name是你自己定义的开源名称)：pod spec create project_name</li>
+				<li>执行完成当前目录下生成一个project_name.podspec的文件，用文本编辑器打开此文件</li>
+				<li>.podspec文件可以参考；请注意他的文件内容，有些#注释的地方要放开;请参考<a href="http://studentdeng.github.io/blog/2013/09/13/cocoapods-tutorial/" target="_blank">项目配置例子</a></li>
+				<li>里面关于s.source_files，这个要注意是你开源文件的目录，不是工程所在目录，如https://github.com/ymsheng/MNFrameRate,我需面写的是s.source_files  = "FrameRate/MNFrameRate/*.{h,m}"</li>
+				<li>其他几个坑：s.license="MIT",s.platform=:ios, s.source= { :git => "https://github.com/ymsheng/MNFrameRate.git", :tag => "0.0.1" }(这是自己开源项目的git地址，和##tag##版本)</li>
+				<li>cocoapods为了区别版本，需要给你每次修改的开源项目打tag</li>
+				<div>$ git add -A && git commit -m "Release 0.0.1."<br>
+					$ git tag '0.0.1'<br>
+					$ git push --tags<br>
+				</div>
+				<li>准备完以上再执行：pod lib lint，把相关的报错都解决了，如果有问题就看上面注意的几点</li>
+				<li>上面命令执行成功后，说明你的代码可以放到cocoapods上了，邮箱，自己的名字，描述；执行：pod trunk register youreamil@xx.com 'your name' --description='macbook air'</li>
+				<li>在你上面命令的邮箱中找到cocoapods发你的邮件，打开相关链接</li>
+				<li>现在执行：pod trunk me；看到相关的注册信息了，此帐号和你的电脑绑定</li>
+				<li>开始提交到线上，执行：pod trunk push project_name.podspec</li>
+				<li>如果执行成功的话：pod search project_name,就可以在cocoapods上找到你项目相关</li>
+				<li>现在别人也可以通过 pod "project_name"找到你的开源工程。如果上面有问题，请从#关于cocoapods相关验证自己的cocoapods是否安装正确</li>
+				
+			</ul><pre>
+				<h4><a href="https://guides.cocoapods.org/making/getting-setup-with-trunk" target="_blank">pod trunk官方：https://guides.cocoapods.org/making/getting-setup-with-trunk</a></h4>
 			</div>
-			<li>准备完以上再执行：pod lib lint，把相关的报错都解决了，如果有问题就看上面注意的几点</li>
-			<li>上面命令执行成功后，说明你的代码可以放到cocoapods上了，邮箱，自己的名字，描述；执行：pod trunk register youreamil@xx.com 'your name' --description='macbook air'</li>
-			<li>在你上面命令的邮箱中找到cocoapods发你的邮件，打开相关链接</li>
-			<li>现在执行：pod trunk me；看到相关的注册信息了，此帐号和你的电脑绑定</li>
-			<li>开始提交到线上，执行：pod trunk push project_name.podspec</li>
-			<li>如果执行成功的话：pod search project_name,就可以在cocoapods上找到你项目相关</li>
-			<li>现在别人也可以通过 pod "project_name"找到你的开源工程。如果上面有问题，请从#关于cocoapods相关验证自己的cocoapods是否安装正确</li>
-
-			<h4><a href="https://guides.cocoapods.org/making/getting-setup-with-trunk" target="_blank">pod trunk官方：https://guides.cocoapods.org/making/getting-setup-with-trunk</a></h4>
-		    
 		</div>
 	
 	
 	</body>
-</html>
+	</html>
 
