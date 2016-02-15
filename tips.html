@@ -1,130 +1,82 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-       <meta http-equiv="X-UA-Compatible" content="IE=edge">
-       <meta name="viewport" content="width=device-width, initial-scale=1">
-	   <link rel="shortcut icon" href="/favicon.ico">
-	   <title>mosn's blog</title>
-	   <!-- 新 Bootstrap 核心 CSS 文件 -->
-	   <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
-	   <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-	   <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-	   <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
-	   <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-	   <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<title>mosn's blog</title>
+	<!-- 新 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </head>
 
 <body>
 	<nav class="navbar navbar-inverse navbar-fixed-top">
-	    <div class="container">
-	           <div class="navbar-header">
-	             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-	               <span class="sr-only">Toggle navigation</span>
-	               <span class="icon-bar"></span>
-	               <span class="icon-bar"></span>
-	               <span class="icon-bar"></span>
-	             </button>
-	             <a class="navbar-brand" href="/index.html">mosn blog</a>
-	           </div>
-	           <div id="navbar" class="collapse navbar-collapse">
-	             <ul class="nav navbar-nav">
-	               <li class="active"><a href="/tips.html">iOS开发</a></li>
-	               <li><a href="/swift.html">swift开发</a></li>
-	               <li><a href="/cocoapods.html">CocoaPods相关</a></li>
-				   <li><a href="/black.html">黑科技</a></li>
-	             </ul>
-	           </div><!--/.nav-collapse -->
-	         </div>
-	       </nav>
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/index.html">mosn blog</a>
+			</div>
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="/tips.html">iOS开发</a></li>
+					<li><a href="/swift.html">swift开发</a></li>
+					<li><a href="/cocoapods.html">CocoaPods相关</a></li>
+					<li><a href="/black.html">黑科技</a></li>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</nav>
 		
-		<div class="container" style="padding-top:64px;">
-			<div class="blog-header">
-				<h3 class="blog-title">iOS开发的技巧</h3>
-				<p class="lead blog-description">iOS开发中的一些tips.</p>
-				<h4>1.UITableView相关</h4>
-				<p></p>
-  			  <ul>当tableview数据源为空的时候，tableview会有多条分割线。如何消除分割线有两种
-  			  <li>1.在tablview把separatorStyle 设置为 UITableViewCellSeparatorStyleNone，在自定义的cell view 底部手动加一个1像素高label</li>
-  			  <li>2.在初始化tableview后，设置tableview.tableFooterView = [[UIView alloc] init];</li>
-  			  </ul>
-			  <p>采用上面第一种方法，要注意2倍，3倍分辨率的屏幕上1像素线的画法</p>
-				<pre>采用上面第一种方法，要注意2倍，3倍分辨率的屏幕上1像素线的画法<br>#define SINGLE_LINE_WIDTH (1 / [UIScreen mainScreen].scale)<br>#define SINGLE_LINE_ADJUST_OFFSET ((1 / [UIScreen mainScreen].scale) / 2)<br>UIView *view = [[UIView alloc] initWithFrame:CGrect(x - SINGLE_LINE_ADJUST_OFFSET, 0, 320, SINGLE_LINE_WIDTH)];</pre>
-				<p>采用上面第二种方法后，需要自己维护tableview分割线的左间距，参考以下方法</p>
-				<pre>-(void)dealLineWithLeftInsert:(CGFloat)insert ///insert代表左间距是多少<br>{<br>#ifdef __IPHONE_7_0<br>    if ([self respondsToSelector:@selector(setSeparatorInset:)])[self setSeparatorInset:UIEdgeInsetsMake(0, insert, 0, 0)];<br>#endif<br>#ifdef __IPHONE_8_0<br>    if ([self respondsToSelector:@selector(setLayoutMargins:)])[self setLayoutMargins:UIEdgeInsetsMake(0, insert, 0, 0)];<br>if ([self respondsToSelector:@selector(setPreservesSuperviewLayoutMargins:)])[self setPreservesSuperviewLayoutMargins:NO];<br>#endif<br>}<br></pre>
-				<p>列表上的广告条，在一个列表展示数据的产品中，经常会在tableviewHeader有一个定时轮播的广告位(UIScrollView+NSTimer)。但是在滑动列表的时候，广告就会停止播放。</p>
-				<p>只要把timer加在当前的runlooph 可以确保定时器正常执行</p>
-				<pre>[[NSRunLoop currentRunLoop] addTimer:<#(NSTimer *yourTimer)#> forMode:NSRunLoopCommonModes>]</pre>
-				<h4 style="padding-top:12px;">2.UIView相关</h4>
-				<p>从view上把子视图移除</p>
-				<pre>[[self.view subviews] makeObjectsPerformSelector:@selector(removeFromSuperview) withObject:nil];</pre>
-				<p>通过设置view的背影颜色透明，不影响子视频的透明度（如果设置父view的alpha值，子view也会继承父view的alpha）</p>
-				<pre> view.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.5]; //只是颜色带alpha，但是view自己的alpha不变</pre>
-				<p>view上的事件响应链</p>
-				<p> 响应链 (view) A[B, C [D,E] ]---这是一个视图的嵌套关关系ABCDE代表一个view，其中D,E的父view是C；B,C的父view是A，A是controller view<br>
-			    当一个touch事件发生后，hit-testing是如果检测到哪个视图响应的<br>
-			    如果touch点击的时候，是点击在view E里面。则检测过程是<br>
-			    1.首先是touch点在view A的bounds中，接下来检测view B和view C.<br>
-			    2.检测到touch点不在view B，在view C中，接下来检测view D和view E.<br>
-			    3.检测到touch点不在view D中，在view E中。<br>
-			    此时hit-testing过程已经完成，view E就是hit-test View.<br>
-			    响应链的起始点是，hit-test view（起点）和UIApplication对象（终点）。传递的方向就是从最上面的view向下传递，如果view是view controller的view，还会经过view controller之后在向下传递，最终到达app对象.
-			    响应链：E->C->A(A是viewcontroler's View)->Window->Application</p>
+	<div class="container" style="padding-top:64px;">
+		<div class="blog-header">
+			<h3 class="blog-title">iOS开发的技巧</h3>
+			<p class="lead blog-description">iOS开发中的一些tips.</p>
+			<h4>1.UITableView相关</h4>
+			<p>当tableview数据源为空的时候，tableview会有多条分割线。如何消除分割线有两种
+				<li>a.在tablview把separatorStyle 设置为 UITableViewCellSeparatorStyleNone，需要分割线的时候在自定义的cell view 底部手动加一个1像素高label</li>
+				<li>b.在初始化tableview后，设置tableview.tableFooterView = [[UIView alloc] init];</li>
+			</p>
+			<p>a.采用上面第一种方法，要注意2倍，3倍分辨率的屏幕上1像素线的画法</p>
+			<pre>#define SINGLE_LINE_WIDTH (1 / [UIScreen mainScreen].scale)<br>#define SINGLE_LINE_ADJUST_OFFSET ((1 / [UIScreen mainScreen].scale) / 2)<br>UIView *view = [[UIView alloc] initWithFrame:CGrect(x - SINGLE_LINE_ADJUST_OFFSET, 0, 320, SINGLE_LINE_WIDTH)];</pre>
+			<p>b.采用上面第二种方法后，需要自己维护tableview分割线的左间距，参考以下方法</p>
+			<pre>-(void)dealLineWithLeftInsert:(CGFloat)insert ///insert代表左间距是多少<br>{<br>#ifdef __IPHONE_7_0<br>    if ([self respondsToSelector:@selector(setSeparatorInset:)])[self setSeparatorInset:UIEdgeInsetsMake(0, insert, 0, 0)];<br>#endif<br>#ifdef __IPHONE_8_0<br>    if ([self respondsToSelector:@selector(setLayoutMargins:)])[self setLayoutMargins:UIEdgeInsetsMake(0, insert, 0, 0)];<br>    if ([self respondsToSelector:@selector(setPreservesSuperviewLayoutMargins:)])[self setPreservesSuperviewLayoutMargins:NO];<br>#endif<br>}<br></pre><br>
+			<p>列表上的广告条，在一个列表展示数据的产品中，经常会在tableviewHeader有一个定时轮播的广告位(UIScrollView+NSTimer)。但是在滑动列表的时候，广告就会停止播放。</p>
+			<p>只要把timer加在当前的runlooph 可以确保定时器正常执行</p>
+			<pre>[[NSRunLoop currentRunLoop] addTimer:<#(NSTimer *yourTimer)#> forMode:NSRunLoopCommonModes>]</pre>
+				
+			<h4 style="padding-top:12px;">2.UIView相关</h4>
+			<p>a.从view上把子视图移除</p>
+			<pre>[[self.view subviews] makeObjectsPerformSelector:@selector(removeFromSuperview) withObject:nil];</pre>
+			<p>b.通过设置view的背影颜色透明，不影响子视频的透明度（如果设置父view的alpha值，子view也会继承父view的alpha）</p>
+			<pre> view.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.5]; //只是颜色带alpha，但是view自己的alpha不变</pre>
+			<p>c.view上的事件响应链</p>
+			<p>响应链 (view) A[B, C [D,E] ]---这是一个视图的嵌套关关系ABCDE代表一个view，其中D,E的父view是C；B,C的父view是A，A是controller view<br>
+				当一个touch事件发生后，hit-testing是如果检测到哪个视图响应的<br>
+				如果touch点击的时候，是点击在view E里面。则检测过程是<br>
+				1.首先是touch点在view A的bounds中，接下来检测view B和view C.<br>
+				2.检测到touch点不在view B，在view C中，接下来检测view D和view E.<br>
+				3.检测到touch点不在view D中，在view E中。<br>
+				此时hit-testing过程已经完成，view E就是hit-test View.<br>
+				响应链的起始点是，hit-test view（起点）和UIApplication对象（终点）。传递的方向就是从最上面的view向下传递，如果view是view controller的view，还会经过view controller之后在向下传递，最终到达app对象.
+				响应链：E->C->A(A是viewcontroler's View)->Window->Application</p>
 			</div>
 			
-			<h3>iOS开发的技巧</h3>
-			<div>
-			  <h4>UITableView相关</h4>
-			  <ul>当tableview数据源为空的时候，tableview会有多条分割线。如何消除分割线有两种
-			  <li>1.在tablview把separatorStyle 设置为 UITableViewCellSeparatorStyleNone，在自定义的cell view 底部手动加一个1像素高label</li><br>
-			  <li>2.在初始化tableview后，设置tableview.tableFooterView = [[UIView alloc] init];</li>
-			  </ul>
-			  <ul>
-			    <li>采用上面第一种方法，要注意2倍，3倍分辨率的屏幕上1像素线的画法</li>
-			    #define SINGLE_LINE_WIDTH (1 / [UIScreen mainScreen].scale)<br>
-			    #define SINGLE_LINE_ADJUST_OFFSET ((1 / [UIScreen mainScreen].scale) / 2)<br>
-			    UIView *view = [[UIView alloc] initWithFrame:CGrect(x - SINGLE_LINE_ADJUST_OFFSET, 0, 320, SINGLE_LINE_WIDTH)];<br><br>
-			    <li>采用上面第二种方法后，需要自己维护tableview分割线的左间距，参考以下方法</li>
-			    -(void)dealLineWithLeftInsert:(CGFloat)insert ///insert代表左间距是多少<br>
-			      {<br>
-			      #ifdef __IPHONE_7_0<br>
-			        if ([self respondsToSelector:@selector(setSeparatorInset:)])[self setSeparatorInset:UIEdgeInsetsMake(0, insert, 0, 0)];<br>
-			      #endif<br><br>
-
-			      #ifdef __IPHONE_8_0<br>
-			        if ([self respondsToSelector:@selector(setLayoutMargins:)])[self setLayoutMargins:UIEdgeInsetsMake(0, insert, 0, 0)];<br>
-			        if ([self respondsToSelector:@selector(setPreservesSuperviewLayoutMargins:)])[self setPreservesSuperviewLayoutMargins:NO];<br>
-			      #endif<br>
-			    }<br>
-			  </ul>
-			  <ul>列表上的广告条，在一个列表展示数据的产品中，经常会在tableviewHeader有一个定时轮播的广告位(UIScrollView+NSTimer)。但是在滑动列表的时候，广告就会停止播放。
-			  只要把timer加在当前的runlooph 可以确保定时器正常执行<br>
-			  [[NSRunLoop currentRunLoop] addTimer:<#(NSTimer *yourTimer)#> forMode:NSRunLoopCommonModes>]
-			  </ul>
-			</div>
-			<div>
-			  <h4>UIView相关</h4>
-			  <ul>
-			    <li>1.从view上把子视图移除</li>
-			    [[self.view subviews] makeObjectsPerformSelector:@selector(removeFromSuperview) withObject:nil];<br><br>
-			    <li>通过设置view的背影颜色透明，不影响子视频的透明度（如果设置父view的alpha值，子view也会继承父view的alpha）</li>
-			    view.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.5]; //只是颜色带alpha，但是view自己的alpha不变<br><br>
-			    <li>view上的事件响应链</li>
-			    响应链 (view) A[B, C [D,E] ]---这是一个视图的嵌套关关系ABCDE代表一个view，其中D,E的父view是C；B,C的父view是A，A是controller view<br>
-			    当一个touch事件发生后，hit-testing是如果检测到哪个视图响应的<br>
-			    如果touch点击的时候，是点击在view E里面。则检测过程是<br>
-			    1.首先是touch点在view A的bounds中，接下来检测view B和view C.<br>
-			    2.检测到touch点不在view B，在view C中，接下来检测view D和view E.<br>
-			    3.检测到touch点不在view D中，在view E中。<br>
-			    此时hit-testing过程已经完成，view E就是hit-test View.<br>
-			    响应链的起始点是，hit-test view（起点）和UIApplication对象（终点）。传递的方向就是从最上面的view向下传递，如果view是view controller的view，还会经过view controller之后在向下传递，最终到达app对象.
-			    响应链：E->C->A(A是viewcontroler's View)->Window->Application
-			  </ul>
-			</div>
+			
 		</div>
 	
 	
 	</body>
-</html>
+	</html>
 
 
