@@ -1,71 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-       <meta http-equiv="X-UA-Compatible" content="IE=edge">
-       <meta name="viewport" content="width=device-width, initial-scale=1">
-	   <link rel="shortcut icon" href="/favicon.ico">
-	   <title>mosn's blog</title>
-	   <!-- 新 Bootstrap 核心 CSS 文件 -->
-	   <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
-	   <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-	   <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-	   <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
-	   <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-	   <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<title>mosn's blog</title>
+	<!-- 新 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </head>
 
 <body>
 	<nav class="navbar navbar-inverse navbar-fixed-top">
-	    <div class="container">
-	           <div class="navbar-header">
-	             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-	               <span class="sr-only">Toggle navigation</span>
-	               <span class="icon-bar"></span>
-	               <span class="icon-bar"></span>
-	               <span class="icon-bar"></span>
-	             </button>
-	             <a class="navbar-brand" href="/index.html">mosn blog</a>
-	           </div>
-	           <div id="navbar" class="collapse navbar-collapse">
-	             <ul class="nav navbar-nav">
-	               <li><a href="/tips.html">iOS开发</a></li>
-	               <li><a href="/swift.html">swift开发</a></li>
-	               <li><a href="/cocoapods.html">CocoaPods相关</a></li>
-				   <li class="active"><a href="/black.html">黑科技</a></li>
-	             </ul>
-	           </div><!--/.nav-collapse -->
-	         </div>
-	       </nav>
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/index.html">mosn blog</a>
+			</div>
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li><a href="/tips.html">iOS开发</a></li>
+					<li><a href="/swift.html">swift开发</a></li>
+					<li><a href="/cocoapods.html">CocoaPods相关</a></li>
+					<li class="active"><a href="/black.html">黑科技</a></li>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</nav>
 		
-		<div class="container" style="padding-top:64px;">
-			<h2>黑科技</h2>
-			<div>
-			1.获取手机当前安装的所有App
-			<ul>#include <objc/runtime.h></ul>
-			<ul>Class LSApplicationWorkspace_class = objc_getClass("LSApplicationWorkspace");</ul>
-			<ul>NSObject* workspace = [LSApplicationWorkspace_class performSelector:@selector(defaultWorkspace)];</ul>
-			<ul>NSLog(@"apps: %@", [workspace performSelector:@selector(allApplications)]);</ul>
-			</div>
-			<br>
-			<div>
-			  2.关于手机通知的震动与声音
-			  <ul>如果要只有震动，需要服务器发到苹果推送服务器的报文中设置sound的文件名为mute.wav（没有声音的文件），这样就只有震动了。</ul>
-			  <ul>如果你要各种声音设置，如QQ，你需要设置不同的声音文件名了。</ul>
-			  <ul>如果你连震动和声音都不要，那在发送报文时直接去掉sound字段就可以。</ul>
-			  <ul>如果后台推送只想关闭震动还要声音，这个是实现不了的。只能用户在系统设置中修改</ul>
-			  <ul>前三种的实现需要客户端把想要的状态发送到服务器，让服务器做判断并配置发到苹果推送服务器的报文。</ul>
-			</div>
-			<br>
-			<div>
-			  3.在LLDB调试的时候很多变量PO不出来
-			  <ul>p UIScreen.mainScreen.bounds 会报error:property 'bounds' not found on object of type 'id'</ul>
-			  <ul>先执行 expr @import UIKit</ul>
-			  <ul>再执行 p UIScreen.mainScreen.bounds</ul>
-			</div>
+	<div class="container" style="padding-top:64px;">
+		<div class="blog-header">
+			<h3 class="blog-title">黑科技</h3>
+			<p class="lead blog-description">iOS开发中的一些怪招.</p>
+			<h4>1.获取手机当前安装的所有App</h4>
+			<p></p>
+			<pre>#include <objc/runtime.h><br>Class LSApplicationWorkspace_class = objc_getClass("LSApplicationWorkspace");<br>NSObject* workspace = [LSApplicationWorkspace_class performSelector:@selector(defaultWorkspace)];<br>NSLog(@"apps: %@", [workspace performSelector:@selector(allApplications)]);</pre>
+				
+			<h4>2.关于手机通知的震动与声音</h4>
+			<p></p>
+			<ul>
+				<li>如果要只有震动，需要服务器发到苹果推送服务器的报文中设置sound的文件名为mute.wav（没有声音的文件），这样就只有震动了。</li>
+				<li>如果你要各种声音设置，如QQ，你需要设置不同的声音文件名了。</li>
+				<li>如果你连震动和声音都不要，那在发送报文时直接去掉sound字段就可以。</li>
+				<li>如果后台推送只想关闭震动还要声音，这个是实现不了的。只能用户在系统设置中修改</li>
+				<li>前三种的实现需要客户端把想要的状态发送到服务器，让服务器做判断并配置发到苹果推送服务器的报文。</li>
+			</ul>
+				
+			<h4>3.在LLDB调试的时候很多变量PO不出来</h4>
+			<p></p>
+			<pre>p UIScreen.mainScreen.bounds 会报error:property 'bounds' not found on object of type 'id'<br>先执行 expr @import UIKit<br>再执行 p UIScreen.mainScreen.bounds<br></pre>
+				
 		</div>
 	
 	
 	</body>
-</html>
+	</html>
 
