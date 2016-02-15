@@ -57,7 +57,6 @@
 
 			
 			<h4 style="padding-top:12px;">2.在自己的工程从cocoapods导入第三方</h4>
-			<p>a.从view上把子视图移除</p>
 			<pre><ul><li>在你们工程目录新建一个命名为Podfile的文件;注意是先创建自己的工程，然后在.xcodeproj同级目录里新建Podfile</li>
 				<li>在Podfile里面编辑你要引入的第三方，如下是一个引入FPS监控的第三方库</li>
 				platform :ios, "6.0"
@@ -76,10 +75,7 @@
 				<li>里面关于s.source_files，这个要注意是你开源文件的目录，不是工程所在目录，如https://github.com/ymsheng/MNFrameRate,我需面写的是s.source_files  = "FrameRate/MNFrameRate/*.{h,m}"</li>
 				<li>其他几个坑：s.license="MIT",s.platform=:ios, s.source= { :git => "https://github.com/ymsheng/MNFrameRate.git", :tag => "0.0.1" }(这是自己开源项目的git地址，和##tag##版本)</li>
 				<li>cocoapods为了区别版本，需要给你每次修改的开源项目打tag</li>
-				<div>$ git add -A && git commit -m "Release 0.0.1."<br>
-					$ git tag '0.0.1'<br>
-					$ git push --tags<br>
-				</div>
+				<div>$ git add -A && git commit -m "Release 0.0.1."<br>$ git tag '0.0.1'<br>$ git push --tags<br></div>
 				<li>准备完以上再执行：pod lib lint，把相关的报错都解决了，如果有问题就看上面注意的几点</li>
 				<li>上面命令执行成功后，说明你的代码可以放到cocoapods上了，邮箱，自己的名字，描述；执行：pod trunk register youreamil@xx.com 'your name' --description='macbook air'</li>
 				<li>在你上面命令的邮箱中找到cocoapods发你的邮件，打开相关链接</li>
@@ -87,8 +83,7 @@
 				<li>开始提交到线上，执行：pod trunk push project_name.podspec</li>
 				<li>如果执行成功的话：pod search project_name,就可以在cocoapods上找到你项目相关</li>
 				<li>现在别人也可以通过 pod "project_name"找到你的开源工程。如果上面有问题，请从#关于cocoapods相关验证自己的cocoapods是否安装正确</li>
-				
-			</ul><pre>
+			</ul></pre>
 				<h4><a href="https://guides.cocoapods.org/making/getting-setup-with-trunk" target="_blank">pod trunk官方：https://guides.cocoapods.org/making/getting-setup-with-trunk</a></h4>
 			</div>
 		</div>
