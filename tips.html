@@ -53,7 +53,7 @@
 			<pre>-(void)dealLineWithLeftInsert:(CGFloat)insert ///insert代表左间距是多少<br>{<br>#ifdef __IPHONE_7_0<br>    if ([self respondsToSelector:@selector(setSeparatorInset:)])[self setSeparatorInset:UIEdgeInsetsMake(0, insert, 0, 0)];<br>#endif<br>#ifdef __IPHONE_8_0<br>    if ([self respondsToSelector:@selector(setLayoutMargins:)])[self setLayoutMargins:UIEdgeInsetsMake(0, insert, 0, 0)];<br>    if ([self respondsToSelector:@selector(setPreservesSuperviewLayoutMargins:)])[self setPreservesSuperviewLayoutMargins:NO];<br>#endif<br>}<br></pre><br>
 			<p>列表上的广告条，在一个列表展示数据的产品中，经常会在tableviewHeader有一个定时轮播的广告位(UIScrollView+NSTimer)。但是在滑动列表的时候，广告就会停止播放。</p>
 			<p>只要把timer加在当前的runlooph 可以确保定时器正常执行</p>
-			<pre>[[NSRunLoop currentRunLoop] addTimer:<#(NSTimer *yourTimer)#> forMode:NSRunLoopCommonModes>]</pre>
+			<pre>[[NSRunLoop currentRunLoop] addTimer:《#(NSTimer *yourTimer)#》 forMode:NSRunLoopCommonModes>]</pre>
 				
 			<h4 style="padding-top:12px;">2.UIView相关</h4>
 			<p>a.从view上把子视图移除</p>
