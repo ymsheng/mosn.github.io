@@ -59,8 +59,7 @@
 			<h4 style="padding-top:12px;">2.在自己的工程从cocoapods导入第三方</h4>
 			<pre><ul><li>在你们工程目录新建一个命名为Podfile的文件;注意是先创建自己的工程，然后在.xcodeproj同级目录里新建Podfile</li>
 				<li>在Podfile里面编辑你要引入的第三方，如下是一个引入FPS监控的第三方库</li>
-				platform :ios, "6.0"
-				pod "MNFrameRate"
+				<div>platform :ios, "6.0"<br>pod "MNFrameRate"<br></div>
 				<li>执行pod install 或 pod update</li>
 				<li>然后打开工程目录中的.xcworkspace文件，在Project中可以找到Pods层级</li>
 			</ul></pre>
