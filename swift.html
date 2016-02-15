@@ -45,16 +45,17 @@
 			<h4>1.NSTimer的选择器方法需要加@objc private</h4>
 			<p></p>
 			<pre>self.timer = NSTimer(fireDate: NSDate(timeIntervalSinceNow: 1), interval: 1.0, target: self, selector: "timerHandler", userInfo: nil, repeats: true)<br>@objc private func timerHandler() {///func detail}</pre>
-
+			<br>
 
 			<h4>2.readonly写法</h4>
 			<pre>private(set) public var isConnected: Bool?</pre>
-			
+			<br>
 			<h4>3.从NSData里面取整数</h4>
 			<pre>let msgData:NSData()//获取到的比特流<br>var i = [UInt8](count:2, repeatedValue: 0) //2代表你要获取几位数<br>msgData.getBytes(&i, length: 2)<br>Int(i[0]),Int(i[1]) 从NSData里面取出来的整数<br></pre>
-			   
+			<br> 
 			<h4>4.字符串截取子串</h4>
 			<pre>let targetStr = "ABCDEFGHI" <br>let begin = targetStr.startIndex.advancedBy(3) //从前数三位  <br>let end = targetStr.endIndex.advancedBy(-3) ///从后数三位<br>return targetStr.substringWithRange(Range(start: begin, end: end)) //得到的子串为"DEF" </pre>
+			<br>
 		</div>
 			
 	</div>
