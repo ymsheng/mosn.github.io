@@ -59,7 +59,8 @@
 			<pre><ul>
 				<li>在你们工程目录新建一个命名为Podfile的文件;注意是先创建自己的工程，然后在.xcodeproj同级目录里新建Podfile</li>
 				<li>在Podfile里面编辑你要引入的第三方，如下是一个引入FPS监控的第三方库</li>
-				<div>platform :ios, "6.0"<br>pod "MNFrameRate"<br></div>
+				<div>platform :ios, "6.0"<br>pod 'MNFrameRate','~> 0.0.2'<br></div>
+				<li>~后面的> 符号可以是<,代表要获取小于'0.0.2'的版本，即获取的是'0.0.1'版本 </li>
 				<li>执行pod install 或 pod update</li>
 				<li>然后打开工程目录中的.xcworkspace文件，在Project中可以找到Pods层级</li>
 			</ul></pre>
@@ -82,7 +83,7 @@
 				<li>开始提交到线上，执行：pod trunk push project_name.podspec</li>
 				<li>如果执行成功的话：pod search project_name,就可以在cocoapods上找到你项目相关</li>
 				<li>现在别人也可以通过 pod "project_name"找到你的开源工程。如果上面有问题，请从#关于cocoapods相关验证自己的cocoapods是否安装正确</li>
-				<li>如果要更新你开源代码，执行：<br>1、git tag '0.0.2'<br>2、git push --tags<br>3、修改project_name.podspec中的 s.source={ :git => "https://github.com/ymsheng/MNFrameRate.git", :tag => "0.0.1" }<br>4、pod lib lint<br>5、pod trunk push project_name.podspec</li>
+				<li>如果要升级版本你的开源代码，执行：<br>1、git tag '0.0.2'<br>2、git push --tags<br>3、修改project_name.podspec中的 s.source={ :git => "https://github.com/ymsheng/MNFrameRate.git", :tag => "0.0.1" }<br>4、pod lib lint<br>5、pod trunk push project_name.podspec</li>
 			</ul></pre>
 				<h4><a href="https://guides.cocoapods.org/making/getting-setup-with-trunk" target="_blank">pod trunk官方：https://guides.cocoapods.org/making/getting-setup-with-trunk</a></h4>
 			</div>
