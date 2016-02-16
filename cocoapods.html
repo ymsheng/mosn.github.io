@@ -82,6 +82,7 @@
 				<li>开始提交到线上，执行：pod trunk push project_name.podspec</li>
 				<li>如果执行成功的话：pod search project_name,就可以在cocoapods上找到你项目相关</li>
 				<li>现在别人也可以通过 pod "project_name"找到你的开源工程。如果上面有问题，请从#关于cocoapods相关验证自己的cocoapods是否安装正确</li>
+				<li>如果要更新你开源代码，执行：git tag '0.0.2'<br>git push --tags<br>修改project_name.podspec中的 s.source={ :git => "https://github.com/ymsheng/MNFrameRate.git", :tag => "0.0.1" }<br>pod lib lint<br>pod trunk push project_name.podspec</li>
 			</ul></pre>
 				<h4><a href="https://guides.cocoapods.org/making/getting-setup-with-trunk" target="_blank">pod trunk官方：https://guides.cocoapods.org/making/getting-setup-with-trunk</a></h4>
 			</div>
