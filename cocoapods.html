@@ -59,7 +59,7 @@
 			<pre><ul>
 				<li>在你们工程目录新建一个命名为Podfile的文件;注意是先创建自己的工程，然后在.xcodeproj同级目录里新建Podfile</li>
 				<li>在Podfile里面编辑你要引入的第三方，如下是一个引入FPS监控的第三方库</li>
-				<div>platform :ios, "6.0"<br>pod 'MNFrameRate','~> 0.0.2'<br></div>
+				<div>platform :ios, "6.0"<br>use_frameworks!<br>pod 'MNFrameRate','~> 0.0.2'<br></div>
 				<li>~后面的> 符号可以是<,代表要获取小于'0.0.2'的版本，即获取的是'0.0.1'版本 </li>
 				<li>执行pod install 或 pod update</li>
 				<li>然后打开工程目录中的.xcworkspace文件，在Project中可以找到Pods层级</li>
