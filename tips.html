@@ -72,15 +72,15 @@
 				响应链：E->C->A(A是viewcontroler's View)->Window->Application</p>
 			
 			<h4 style="padding-top:12px;">3.UITextField placeholder的颜色和位置</h4>
-			<p>继承uitextfield，重写这个方法
-			   - (void) drawPlaceholderInRect:(CGRect)rect {
-				   	[[UIColor blueColor] setFill];
+			<p>继承uitextfield，重写这个方法<br>
+			   - (void) drawPlaceholderInRect:(CGRect)rect {<br>
+				   	[[UIColor blueColor] setFill];<br>
 					[self.placeholder drawInRect:rect withFont:self.font lineBreakMode:UILineBreakModeTailTruncation alignment:self.textAlignment];
 				}</p>
 			
 			<h4 style="padding-top:12px;">3.UINavigationBar改变为透明</h4>
-			<p>[self.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-				self.navigationBar.shadowImage = [UIImage new];
+			<p>[self.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];<br>
+				self.navigationBar.shadowImage = [UIImage new];<br>
 				self.navigationBar.translucent = YES;</p>
 				
 			</div>
