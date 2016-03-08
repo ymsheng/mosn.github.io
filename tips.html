@@ -70,8 +70,20 @@
 				此时hit-testing过程已经完成，view E就是hit-test View.<br>
 				响应链的起始点是，hit-test view（起点）和UIApplication对象（终点）。传递的方向就是从最上面的view向下传递，如果view是view controller的view，还会经过view controller之后在向下传递，最终到达app对象.
 				响应链：E->C->A(A是viewcontroler's View)->Window->Application</p>
-			</div>
 			
+			<h4 style="padding-top:12px;">3.UITextField placeholder的颜色和位置</h4>
+			<p>继承uitextfield，重写这个方法
+			   - (void) drawPlaceholderInRect:(CGRect)rect {
+				   	[[UIColor blueColor] setFill];
+					[self.placeholder drawInRect:rect withFont:self.font lineBreakMode:UILineBreakModeTailTruncation alignment:self.textAlignment];
+				}</p>
+			
+			<h4 style="padding-top:12px;">3.UINavigationBar改变为透明</h4>
+			<p>[self.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+				self.navigationBar.shadowImage = [UIImage new];
+				self.navigationBar.translucent = YES;</p>
+				
+			</div>
 			
 		</div>
 	
