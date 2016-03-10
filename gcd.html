@@ -94,7 +94,31 @@ NSLog(@"------end-----");</code></pre>
 			
 			</p>
 			<h4>4.有意思的栅栏dispatch_barrier_async</h4>
-			<p></p>
+			<p>一个dispatch barrier 允许在一个并发(只有并发才有意义)队列中创建一个同步点。当在并发队列中遇到一个barrier, 他会延迟执行barrier的block,等待所有在barrier之前提交的blocks执行结束。 这时，barrier block自己开始执行。 之后， 队列继续正常的执行操作</p>
+			<pre><code> dispatch_queue_t queue = dispatch_queue_create("gcdtest.rongfzh.yc", DISPATCH_QUEUE_CONCURRENT);
+    
+    dispatch_async(queue, ^{
+        [NSThread sleepForTimeInterval:3];
+        NSLog(@"dispatch_async1");
+    });
+    dispatch_async(queue, ^{
+        [NSThread sleepForTimeInterval:1];
+        NSLog(@"dispatch_async2");
+    });
+    dispatch_barrier_async(queue, ^{
+        NSLog(@"dispatch_barrier_async");
+        [NSThread sleepForTimeInterval:0.5];
+        
+    });
+    dispatch_async(queue, ^{
+        [NSThread sleepForTimeInterval:3];
+        NSLog(@"dispatch_async3");
+    });
+    dispatch_async(queue, ^{
+        [NSThread sleepForTimeInterval:1];
+        NSLog(@"dispatch_async4");
+    });</code></pre>
+	<p>前面在异步的并行队列中插入两入block,中间用dispatch_barrier_async拦了一下，后面又插入两入block。前两个谁快谁先执行（并行）；当前两个执行完，再执行dispatch_barrier_async，最后两在dispatch_barrier_async之后并行执行。</p>
 		</div>
 			
 	</div>
