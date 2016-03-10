@@ -48,7 +48,7 @@
 				<li>dispatch_sync - 同步执行的block，直到block里面的代码执行完了才会继续执行他下面的代码</li>
 			</p>
 			<p>拷贝以下代码，在xcode运行查看输出结果；然后修改dispatch_async为dispatch_sync再查看</p>
-			<code>dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0); 
+			<pre><code>dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0); 
 				NSLog(@"---begin----");
 				dispatch_async(queue, ^{
 					sleep(7);
@@ -60,7 +60,7 @@
 					NSLog(@"-----2-----");
 				});
 				NSLog(@"---end----");
-			</code>
+			</code></pre>
 			<h4>2.串行vs并行</h4>
 			<p>是指队列里面block排列方式，与异步同步是两个概念：
 				<li>dispatch_queue_t queue2 = dispatch_get_main_queue(); 获得的queue2是主线程上的一个串行队列，所有放入到queue2里面的任务是按顺序执行</li>
@@ -76,7 +76,7 @@
 			</p>
 			<h4>4.dispatch_after</h4>
 			<p>开发中经常有一些延迟几秒后的操作我们会用dispatch_after。after几秒指的是将一个Block在特定的延时以后，加入到指定的队列中，不是在特定的时间后立即运行！。（重要的话说三遍）</p>
-			<code>
+			<pre><code>
 				dispatch_queue_t queue = dispatch_queue_create("my-fifo-queue", DISPATCH_QUEUE_SERIAL); //一个后台串行队列
 				NSLog(@"------begin-----");
 				dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), queue, ^{
@@ -89,7 +89,7 @@
 				});
 				
 				NSLog(@"------end-----");
-			</code>
+			</code></pre>
 			<p>以上代码解析：<br>
 			1.在后台创建一个串行队列<br>
 			2.在2秒后插入一个block（此block的功能只打印after 2s)<br>
