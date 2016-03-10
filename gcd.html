@@ -49,52 +49,48 @@
 			</p>
 			<p>拷贝以下代码，在xcode运行查看输出结果；然后修改dispatch_async为dispatch_sync再查看</p>
 			<pre><code>dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0); 
-				NSLog(@"---begin----");
-				dispatch_async(queue, ^{
-					sleep(7);
-					NSLog(@"----1---");
-				});
+NSLog(@"---begin----");
+dispatch_async(queue, ^{
+		sleep(7);
+		NSLog(@"----1---");
+});
     
-				dispatch_async(queue, ^{
-					sleep(2);
-					NSLog(@"-----2-----");
-				});
-				NSLog(@"---end----");
-			</code></pre>
+dispatch_async(queue, ^{
+		sleep(2);
+		NSLog(@"-----2-----");
+});
+NSLog(@"---end----");</code></pre>
 			<h4>2.串行vs并行</h4>
-			<p>是指队列里面block排列方式，与异步同步是两个概念：
-				<li>dispatch_queue_t queue2 = dispatch_get_main_queue(); 获得的queue2是主线程上的一个串行队列，所有放入到queue2里面的任务是按顺序执行</li>
-				<li>dispatch_queue_t queue1 = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0); 获取queue1是后台线程上的一个并行队列，所有放入到queue1里面的任务并列表执行不分先后顺序</li>
-				<li>dispatch_queue_t queue = dispatch_queue_create("my-queue", DISPATCH_QUEUE_SERIAL); 自定义一个后台串行队列；请注意最后一个参数，不是NULL。DISPATCH_QUEUE_SERIAL这个参数大家可以看一下它的宏定义就是一个NULL。建议规范写法</li>
-				<li>dispatch_queue_t queue = dispatch_queue_create("my-queue", DISPATCH_QUEUE_CONCURRENT);自定义一个后台并行队列；请注意最后一个参数，不是NULL。DISPATCH_QUEUE_CONCURRENT表示队列是并行的。</li>
-			</p>
+			<pre><code>是指队列里面block排列方式，与异步同步是两个概念：
+dispatch_queue_t queue2 = dispatch_get_main_queue(); 获得的queue2是主线程上的一个串行队列，所有放入到queue2里面的任务是按顺序执行
+dispatch_queue_t queue1 = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0); 获取queue1是后台线程上的一个并行队列，所有放入到queue1里面的任务并列表执行不分先后顺序
+dispatch_queue_t queue = dispatch_queue_create("my-queue", DISPATCH_QUEUE_SERIAL); 自定义一个后台串行队列；请注意最后一个参数，不是NULL。DISPATCH_QUEUE_SERIAL这个参数大家可以看一下它的宏定义就是一个NULL。建议规范写法
+dispatch_queue_t queue = dispatch_queue_create("my-queue", DISPATCH_QUEUE_CONCURRENT);自定义一个后台并行队列；请注意最后一个参数，不是NULL。DISPATCH_QUEUE_CONCURRENT表示队列是并行的.</code></pre>
 			<h4>3.一些误区</h4>
 			<p>
-				    dispatch_queue_t queue1 = dispatch_queue_create("my-queue-text", DISPATCH_QUEUE_SERIAL);
-					dispatch_queue_t queue2 = dispatch_queue_create("my-queue-text", DISPATCH_QUEUE_SERIAL);
+				  <li>dispatch_queue_t queue1 = dispatch_queue_create("my-queue-text", DISPATCH_QUEUE_SERIAL);</li>
+					<li>dispatch_queue_t queue2 = dispatch_queue_create("my-queue-text", DISPATCH_QUEUE_SERIAL);</li>
 					虽然两个queue的标识符都是my-queue-text,而且都为串行的，但实际上这是两个不同的队列。他们两的工作队列互不影响。如果你想要保证所有任务串，最好申明一个全局的queue出来。
 			</p>
 			<h4>4.dispatch_after</h4>
 			<p>开发中经常有一些延迟几秒后的操作我们会用dispatch_after。after几秒指的是将一个Block在特定的延时以后，加入到指定的队列中，不是在特定的时间后立即运行！。（重要的话说三遍）</p>
-			<pre><code>
-				dispatch_queue_t queue = dispatch_queue_create("my-fifo-queue", DISPATCH_QUEUE_SERIAL); //一个后台串行队列
-				NSLog(@"------begin-----");
-				dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), queue, ^{
-				        NSLog(@"----after 2s----");
-				});
+			<pre><code>dispatch_queue_t queue = dispatch_queue_create("my-fifo-queue", DISPATCH_QUEUE_SERIAL); //一个后台串行队列
+NSLog(@"------begin-----");
+dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), queue, ^{
+	        NSLog(@"----after 2s----");
+});
 
-				dispatch_async(queue, ^{
-				        sleep(5);
-				        NSLog(@"-----3-----");
-				});
+dispatch_async(queue, ^{
+	        sleep(5);
+	        NSLog(@"-----3-----");
+});
 				
-				NSLog(@"------end-----");
-			</code></pre>
+NSLog(@"------end-----");</code></pre>
 			<p>以上代码解析：<br>
 			1.在后台创建一个串行队列<br>
 			2.在2秒后插入一个block（此block的功能只打印after 2s)<br>
 			3.在队列中插入另一个block（此block线程睡5s后打印3）<br><br>
-			输出结果：begin,end,3,after 2s;  因为是一个异步操作，所以执行的block不会阻塞后面代码的打印（输入出begin,end);因为dispatch_after是延迟2s后才把block插入到队列中，所以队列是第一个插入的是“打印3”；但是”打印3“在队列里执行的时候睡了5s，只有等到7s的时候才会把”after2s“的block插入并执行。
+			输出结果：begin,end,3,after 2s; <br> 因为是一个异步操作，所以执行的block不会阻塞后面代码的打印（输入出begin,end);因为dispatch_after是延迟2s后才把block插入到队列中，所以队列是第一个插入的是“打印3”；但是”打印3“在队列里执行的时候睡了5s，只有等到7s的时候才会把”after2s“的block插入并执行。
 			
 			</p>
 			<h4>4.有意思的栅栏dispatch_barrier_async</h4>
