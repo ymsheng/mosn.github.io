@@ -44,8 +44,8 @@
 			<p class="lead blog-description">项目开发中我们经常用到异步，同步，串行执行，并行执行，主线程，后台线程.</p>
 			<h4>1.异步vs同步</h4>
 			<p>最简单的说,执行队列里面的block以哪种方式：
-				<li>dispatch_async - 异步执行的block，不会阻塞他下面的代码执行（如你在异步执行的block里面sleep(10),不会影响其他代码的继续执行）</li>
-				<li>dispatch_sync - 同步执行的block，直到block里面的代码执行完了才会继续执行他下面的代码</li>
+				<li><strong>dispatch_async</strong> - 异步执行的block，不会阻塞他下面的代码执行（如你在异步执行的block里面sleep(10),不会影响其他代码的继续执行）</li>
+				<li><strong>dispatch_sync</strong> - 同步执行的block，直到block里面的代码执行完了才会继续执行他下面的代码</li>
 			</p>
 			<p>拷贝以下代码，在xcode运行查看输出结果；然后修改dispatch_async为dispatch_sync再查看</p>
 			<pre><code>dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0); 
@@ -62,27 +62,31 @@ dispatch_async(queue, ^{
 NSLog(@"---end----");</code></pre>
 			<h4>2.串行vs并行</h4>
 			<pre><code>是指队列里面block排列方式，与异步同步是两个概念：
+				
 dispatch_queue_t queue2 = dispatch_get_main_queue(); 获得的queue2是主线程上的一个串行队列，所有放入到queue2里面的任务是按顺序执行
+
 dispatch_queue_t queue1 = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0); 获取queue1是后台线程上的一个并行队列，所有放入到queue1里面的任务并列表执行不分先后顺序
-dispatch_queue_t queue = dispatch_queue_create("my-queue", DISPATCH_QUEUE_SERIAL); 自定义一个后台串行队列；请注意最后一个参数，不是NULL。DISPATCH_QUEUE_SERIAL这个参数大家可以看一下它的宏定义就是一个NULL。建议规范写法
-dispatch_queue_t queue = dispatch_queue_create("my-queue", DISPATCH_QUEUE_CONCURRENT);自定义一个后台并行队列；请注意最后一个参数，不是NULL。DISPATCH_QUEUE_CONCURRENT表示队列是并行的.</code></pre>
+
+dispatch_queue_t queue = dispatch_queue_create("my-queue", DISPATCH_QUEUE_SERIAL); 自定义一个后台串行队列；请注意最后一个参数，不是NULL。<strong>DISPATCH_QUEUE_SERIAL</strong>这个参数大家可以看一下它的宏定义就是一个NULL。建议规范写法
+
+dispatch_queue_t queue = dispatch_queue_create("my-queue", DISPATCH_QUEUE_CONCURRENT);自定义一个后台并行队列；请注意最后一个参数，不是NULL。<strong>DISPATCH_QUEUE_CONCURRENT</strong>表示队列是并行的.</code></pre>
 			<h4>3.一些误区</h4>
 			<p>
-				  <li>dispatch_queue_t queue1 = dispatch_queue_create("my-queue-text", DISPATCH_QUEUE_SERIAL);</li>
-					<li>dispatch_queue_t queue2 = dispatch_queue_create("my-queue-text", DISPATCH_QUEUE_SERIAL);</li>
-					虽然两个queue的标识符都是my-queue-text,而且都为串行的，但实际上这是两个不同的队列。他们两的工作队列互不影响。如果你想要保证所有任务串，最好申明一个全局的queue出来。
+			    <li>dispatch_queue_t queue1 = dispatch_queue_create("my-queue-text", DISPATCH_QUEUE_SERIAL);</li>
+				<li>dispatch_queue_t queue2 = dispatch_queue_create("my-queue-text", DISPATCH_QUEUE_SERIAL);</li>
+					虽然两个queue的标识符都是<strong>my-queue-text<strong>,而且都为串行的，但实际上这是两个不同的队列。他们两的工作队列互不影响。如果你想要保证所有任务串，最好申明一个全局的queue出来。
 			</p>
 			<h4>4.dispatch_after</h4>
 			<p>开发中经常有一些延迟几秒后的操作我们会用dispatch_after。after几秒指的是将一个Block在特定的延时以后，加入到指定的队列中，不是在特定的时间后立即运行！。（重要的话说三遍）</p>
 			<pre><code>dispatch_queue_t queue = dispatch_queue_create("my-fifo-queue", DISPATCH_QUEUE_SERIAL); //一个后台串行队列
 NSLog(@"------begin-----");
 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), queue, ^{
-	        NSLog(@"----after 2s----");
+	  NSLog(@"----after 2s----");
 });
 
 dispatch_async(queue, ^{
-	        sleep(5);
-	        NSLog(@"-----3-----");
+	  sleep(5);
+	  NSLog(@"-----3-----");
 });
 				
 NSLog(@"------end-----");</code></pre>
@@ -118,7 +122,7 @@ NSLog(@"------end-----");</code></pre>
         [NSThread sleepForTimeInterval:1];
         NSLog(@"dispatch_async4");
     });</code></pre>
-	<p>前面在异步的并行队列中插入两入block,中间用dispatch_barrier_async拦了一下，后面又插入两入block。前两个谁快谁先执行（并行）；当前两个执行完，再执行dispatch_barrier_async，最后两在dispatch_barrier_async之后并行执行。</p>
+	<p>前面在异步的并行队列中插入两入block,中间用<strong>dispatch_barrier_async</strong>拦了一下，后面又插入两入block。前两个谁快谁先执行（并行）；当前两个执行完，再执行<strong>dispatch_barrier_async</strong>，最后两在<strong>dispatch_barrier_async</strong>之后并行执行。</p>
 		</div>
 			
 	</div>
