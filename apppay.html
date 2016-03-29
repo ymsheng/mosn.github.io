@@ -45,13 +45,13 @@
 			<p class="lead blog-description">以下我会把<strong>后台设置，道具创建，购买和发布</strong>都介绍给大家：</p>
 			<h4>1.后台条款与帐号</h4>
 			<p>先登录苹果itunes后台https://itunesconnect.apple.com，选择“Agreements,Tax,and Banking”;页面上有三个地方需要设置：
-				<li>Contact Info: 就是你公司一些相关联系人的信息，如果是个人开发者都可以选自己。首先Add New Contact，把相关人员信息写完，然后在下面的Role里面就可以选择刚编辑好的人员信息了。</li>
-				<li>Bank Info：选择Add Bank Account，会让你填写一个CNAPS Code的东西，你直接你银行卡的大线客服，说你要这个CNAPS Code（实际上是开户行的一个代号，招商银行是12们的数字）；然后填写你银行的开户人和卡号，名字要求是英语或拼音。</li>
-				<li>Tax Info：选择U.S. Tax Forms，按他的提示选择，最后最麻烦的就是那个税的条款，1.Tax Information都要写；2.Substitute Form W-8BEN-E 选择14的a,b;15的Income from the sale of applications.其他按默认。提交</li>
+				<li><strong>Contact Info:</strong> 就是你公司一些相关联系人的信息，如果是个人开发者都可以选自己。首先Add New Contact，把相关人员信息写完，然后在下面的Role里面就可以选择刚编辑好的人员信息了。</li>
+				<li><strong>Bank Info：</strong>选择Add Bank Account，会让你填写一个CNAPS Code的东西，你直接你银行卡的大线客服，说你要这个CNAPS Code（实际上是开户行的一个代号，招商银行是12们的数字）；然后填写你银行的开户人和卡号，名字要求是英语或拼音。</li>
+				<li><strong>Tax Info：</strong>选择U.S. Tax Forms，按他的提示选择，最后最麻烦的就是那个税的条款，1.Tax Information都要写；2.Substitute Form W-8BEN-E 选择14的a,b;15的Income from the sale of applications.其他按默认。提交</li>
 				都填写完成后，提交审核，大概一天能通过。
 			</p>
 			<h4 style="padding-top:12px;">2.创建道具</h4>
-			<p>打开后台后，选择My Apps；选择进入要增加道具的app；在上方会有四个功能（App Store，Features,TestFlight,Activity),选择进入Features;在In-App Purchases下，点击+号，开始创建自己的道具。需要注意以下几个问题：
+			<p>打开后台后，选择My Apps；选择进入要增加道具的app；在上方会有四个功能（App Store，Features,TestFlight,Activity),选择进入Features;在<strong>In-App Purchases</strong>下，点击+号，开始创建自己的道具。需要注意以下几个问题：
 				<li>道具的价格只能选择苹果已定好的价格，不能自定义；</li>
 				<li>道具的Product ID在同一应用内不能重复，在操作购买的时候需要此ID，所有在定义Product ID的时候要和服务器后台的数据关联。我们的做法是（com.companyname.item.道具的服务器Id）;这样的好处是在代码部分就可以灵活拼接出product id.而不用在服务器数据库保存这个product id</li>
 				<li>道具介绍和使用说明要认真写，并提交一张道具在应用内的截图。方便苹果工作人员审核</li>
@@ -60,19 +60,19 @@
 			</p>
 			<h4 style="padding-top:12px;">3.完成以上步骤后开始创建内购时使用的测试帐号，此帐号也要在提交审核的时候一并提供给苹果</h4>
 			<p>
-				<li>选择进入Users and Roles后，上方会有三个选项（iTunes Connect Users, TestFlight Beta Testers, Sandbox Testers) ,选择"Sandbox Testers";</li>
+				<li>选择进入Users and Roles后，上方会有三个选项（iTunes Connect Users, TestFlight Beta Testers, Sandbox Testers) ,选择<strong>"Sandbox Testers"</strong>;</li>
 				<li>选择+号后，开始添加自己的测试帐号；记录好自己的邮箱和密码</li>
 				<li>添加成功后，在iPhone的设置中先把自己原来的app store帐号注销。先不要登录测试号，在后面的应用内点击了购买后会让我们再次登录的。</li>
 			</p>
 			<h4 style="padding-top:12px;">4.代码开发内购</h4>
-			<p>购买流程大概是，第一步你告诉苹果一个要购买的道具productId后，苹果返回这个productId对应的商品信息(SKProduct);第二步把获取到的商品加入到购买队列中，等待购买结果的回调。要注意以下：
+			<p>购买流程大概是，<strong>第一步你告诉苹果一个要购买的道具productId后，苹果返回这个productId对应的商品信息(SKProduct);第二步把获取到的商品加入到购买队列中，等待购买结果的回调</strong>。要注意以下：
 				<li>代码有好多，自己去找个博客copy一下</li>
 				<li>对商品信息进行缓存，这样第一步所消耗的时间就会减少。我们应用是在app打开后，获取到所有商品的productId后就进行了第一步操作，并把返回的商品信息(SKProduct)都以productId为key保存到了一个字典中。</li>
 				<li>每次开始购买的时候先从字典中找有没有相关的商品信息(SKProduct)；没有继续第一步操作，反之从字典中取出SKProduct直接开始第二步。研究了几个大厂的应用基本上都第一步很快（应该是加了缓存）。第二步大家都差不多慢</li>
 				<li>因为看到猿题库的支付分享，说了越狱手机支付带来的风险（新浪微博也不让越狱用户购买），我们也直接判断了如果手机是越狱的，提示不让购买。</li>
 			</p>
 			<h4 style="padding-top:12px;">5.发布时选择道具一起进入review</h4>
-			<p>刚开时以为只要把app提交了，这个版本的道具也会一并进入Review。但是当我提交后，进和In-App Purchases发现道具的状态还是”ready for submit”；网上说要把二进制包删除了再提交才会出来一个按钮，把道具加入审核；实际上最新版本在你当前准备提交的app itunes后台，选择Build的下方，有一个In-App purchases的选项，在那里把自己的道具添加后，再提交就一切正常了。</p>
+			<p>刚开时以为只要把app提交了，这个版本的道具也会一并进入Review。但是当我提交后，进和In-App Purchases发现道具的状态还是”ready for submit”；网上说要把二进制包删除了再提交才会出来一个按钮，把道具加入审核；实际上最新版本在你当前准备提交的app itunes后台，<strong>选择Build的下方，有一个In-App purchases的选项，在那里把自己的道具添加后，再提交就一切正常了</strong>。</p>
 		
 		</div>
 			
