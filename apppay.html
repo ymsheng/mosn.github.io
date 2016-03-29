@@ -74,7 +74,6 @@
 			<h4 style="padding-top:12px;">5.发布时选择道具一起进入review</h4>
 			<p>刚开时以为只要把app提交了，这个版本的道具也会一并进入Review。但是当我提交后，进和In-App Purchases发现道具的状态还是”ready for submit”；网上说要把二进制包删除了再提交才会出来一个按钮，把道具加入审核；实际上最新版本在你当前准备提交的app itunes后台，选择Build的下方，有一个In-App purchases的选项，在那里把自己的道具添加后，再提交就一切正常了。</p>
 		
-	<h5>前面在异步的并行队列中插入两入block,中间用<strong>dispatch_barrier_async</strong>拦了一下，后面又插入两入block。前两个谁快谁先执行（并行）；当前两个执行完，再执行<strong>dispatch_barrier_async</strong>，最后两在<strong>dispatch_barrier_async</strong>之后并行执行。</h5>
 		</div>
 			
 	</div>
