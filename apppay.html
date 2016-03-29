@@ -40,88 +40,40 @@
 		
 	<div class="container" style="padding-top:64px;">
 		<div class="blog-header">
-			<h3 class="blog-title">GCD的介绍</h3>
-			<p class="lead blog-description">项目开发中我们经常用到异步，同步，串行执行，并行执行，主线程，后台线程.</p>
-			<h4>1.异步vs同步</h4>
-			<p>最简单的说,执行队列里面的block以哪种方式：
-				<li><strong>dispatch_async</strong> - 异步执行的block，不会阻塞他下面的代码执行（如你在异步执行的block里面sleep(10),不会影响其他代码的继续执行）</li>
-				<li><strong>dispatch_sync</strong> - 同步执行的block，直到block里面的代码执行完了才会继续执行他下面的代码</li>
+			<h3 class="blog-title">苹果应用内购买实践</h3>
+			<p class="lead blog-description">最近项目中开发了道具功能，按苹果的要求（虚拟道具-应用可以不断的生产，没有成本的功能或服务)都需要通过苹果帐号购买，苹果会按你收入的30%提成，你只能到手70%.在开发此功能的时候，代码部分没有多，更多的精力是在itunes后台的配置上。</p>
+			<p class="lead blog-description">以下我会把后台设置，道具创建，购买和发布都介绍给大家：</p>
+			<h4>1.后台条款与帐号</h4>
+			<p>先登录苹果itunes后台https://itunesconnect.apple.com，选择“Agreements,Tax,and Banking”;页面上有三个地方需要设置：
+				<li>Contact Info: 就是你公司一些相关联系人的信息，如果是个人开发者都可以选自己。首先Add New Contact，把相关人员信息写完，然后在下面的Role里面就可以选择刚编辑好的人员信息了。</li>
+				<li>Bank Info：选择Add Bank Account，会让你填写一个CNAPS Code的东西，你直接你银行卡的大线客服，说你要这个CNAPS Code（实际上是开户行的一个代号，招商银行是12们的数字）；然后填写你银行的开户人和卡号，名字要求是英语或拼音。</li>
+				<li>Tax Info：选择U.S. Tax Forms，按他的提示选择，最后最麻烦的就是那个税的条款，1.Tax Information都要写；2.Substitute Form W-8BEN-E 选择14的a,b;15的Income from the sale of applications.其他按默认。提交</li>
+				都填写完成后，提交审核，大概一天能通过。
 			</p>
-			<p>拷贝以下代码，在xcode运行查看输出结果；然后修改dispatch_async为dispatch_sync再查看</p>
-			<pre><code>dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0); 
-NSLog(@"---begin----");
-dispatch_async(queue, ^{
-		sleep(7);
-		NSLog(@"----1---");
-});
-    
-dispatch_async(queue, ^{
-		sleep(2);
-		NSLog(@"-----2-----");
-});
-NSLog(@"---end----");</code></pre>
-			<h4 style="padding-top:12px;">2.串行vs并行</h4>
-			<pre><code>是指队列里面block排列方式，与异步同步是两个概念：
-				
-dispatch_queue_t queue2 = dispatch_get_main_queue(); 获得的queue2是主线程上的一个串行队列，所有放入到queue2里面的任务是按顺序执行
-
-dispatch_queue_t queue1 = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0); 获取queue1是后台线程上的一个并行队列，所有放入到queue1里面的任务并列表执行不分先后顺序
-
-dispatch_queue_t queue = dispatch_queue_create("my-queue", DISPATCH_QUEUE_SERIAL); 自定义一个后台串行队列；请注意最后一个参数，不是NULL。<strong>DISPATCH_QUEUE_SERIAL</strong>这个参数大家可以看一下它的宏定义就是一个NULL。建议规范写法
-
-dispatch_queue_t queue = dispatch_queue_create("my-queue", DISPATCH_QUEUE_CONCURRENT);自定义一个后台并行队列；请注意最后一个参数，不是NULL。<strong>DISPATCH_QUEUE_CONCURRENT</strong>表示队列是并行的.</code></pre>
-			<h4 style="padding-top:12px;">3.一些误区</h4>
+			<h4 style="padding-top:12px;">2.创建道具</h4>
+			<p>打开后台后，选择My Apps；选择进入要增加道具的app；在上方会有四个功能（App Store，Features,TestFlight,Activity),选择进入Features;在In-App Purchases下，点击+号，开始创建自己的道具。需要注意以下几个问题：
+				<li>道具的价格只能选择苹果已定好的价格，不能自定义；</li>
+				<li>道具的Product ID在同一应用内不能重复，在操作购买的时候需要此ID，所有在定义Product ID的时候要和服务器后台的数据关联。我们的做法是（com.companyname.item.道具的服务器Id）;这样的好处是在代码部分就可以灵活拼接出product id.而不用在服务器数据库保存这个product id</li>
+				<li>道具介绍和使用说明要认真写，并提交一张道具在应用内的截图。方便苹果工作人员审核</li>
+				<li>以上应用都填写完整后，道具的状态会变为ready for submit.</li>
+				<li>每次新增道具都必需跟着发版本，再次进行审核</li>
+			</p>
+			<h4 style="padding-top:12px;">3.完成以上步骤后开始创建内购时使用的测试帐号，此帐号也要在提交审核的时候一并提供给苹果</h4>
 			<p>
-			    <li>dispatch_queue_t queue1 = dispatch_queue_create("my-queue-text", DISPATCH_QUEUE_SERIAL);</li>
-				<li>dispatch_queue_t queue2 = dispatch_queue_create("my-queue-text", DISPATCH_QUEUE_SERIAL);</li>
-					虽然两个queue的标识符都是<strong>my-queue-text</strong>,而且都为串行的，但实际上这是两个不同的队列。他们两的工作队列互不影响。如果你想要保证所有任务串，最好申明一个全局的queue出来。
+				<li>选择进入Users and Roles后，上方会有三个选项（iTunes Connect Users, TestFlight Beta Testers, Sandbox Testers) ,选择"Sandbox Testers";</li>
+				<li>选择+号后，开始添加自己的测试帐号；记录好自己的邮箱和密码</li>
+				<li>添加成功后，在iPhone的设置中先把自己原来的app store帐号注销。先不要登录测试号，在后面的应用内点击了购买后会让我们再次登录的。</li>
 			</p>
-			<h4>4.dispatch_after</h4>
-			<p>开发中经常有一些延迟几秒后的操作我们会用dispatch_after。after几秒指的是将一个Block在特定的延时以后，加入到指定的队列中，不是在特定的时间后立即运行！。（重要的话说三遍）</p>
-			<pre><code>dispatch_queue_t queue = dispatch_queue_create("my-fifo-queue", DISPATCH_QUEUE_SERIAL); //一个后台串行队列
-NSLog(@"------begin-----");
-dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), queue, ^{
-	  NSLog(@"----after 2s----");
-});
-
-dispatch_async(queue, ^{
-	  sleep(5);
-	  NSLog(@"-----3-----");
-});
-				
-NSLog(@"------end-----");</code></pre>
-			<p>以上代码解析：<br>
-			1.在后台创建一个串行队列<br>
-			2.在2秒后插入一个block（此block的功能只打印after 2s)<br>
-			3.在队列中插入另一个block（此block线程睡5s后打印3）<br><br>
-			输出结果：begin,end,3,after 2s; <br> 因为是一个异步操作，所以执行的block不会阻塞后面代码的打印（输入出begin,end);因为dispatch_after是延迟2s后才把block插入到队列中，所以队列是第一个插入的是“打印3”；但是”打印3“在队列里执行的时候睡了5s，只有等到7s的时候才会把”after2s“的block插入并执行。
-			
+			<h4 style="padding-top:12px;">4.代码开发内购</h4>
+			<p>购买流程大概是，第一步你告诉苹果一个要购买的道具productId后，苹果返回这个productId对应的商品信息(SKProduct);第二步把获取到的商品加入到购买队列中，等待购买结果的回调。要注意以下：
+				<li>代码有好多，自己去找个博客copy一下</li>
+				<li>对商品信息进行缓存，这样第一步所消耗的时间就会减少。我们应用是在app打开后，获取到所有商品的productId后就进行了第一步操作，并把返回的商品信息(SKProduct)都以productId为key保存到了一个字典中。</li>
+				<li>每次开始购买的时候先从字典中找有没有相关的商品信息(SKProduct)；没有继续第一步操作，反之从字典中取出SKProduct直接开始第二步。研究了几个大厂的应用基本上都第一步很快（应该是加了缓存）。第二步大家都差不多慢</li>
+				<li>因为看到猿题库的支付分享，说了越狱手机支付带来的风险（新浪微博也不让越狱用户购买），我们也直接判断了如果手机是越狱的，提示不让购买。</li>
 			</p>
-			<h4 style="padding-top:12px;">4.有意思的栅栏dispatch_barrier_async</h4>
-			<p>一个dispatch barrier 允许在一个并发(只有并发才有意义)队列中创建一个同步点。当在并发队列中遇到一个barrier, 他会延迟执行barrier的block,等待所有在barrier之前提交的blocks执行结束。 这时，barrier block自己开始执行。 之后， 队列继续正常的执行操作</p>
-			<pre><code> dispatch_queue_t queue = dispatch_queue_create("gcdtest.rongfzh.yc", DISPATCH_QUEUE_CONCURRENT);
-    
-    dispatch_async(queue, ^{
-        [NSThread sleepForTimeInterval:3];
-        NSLog(@"dispatch_async1");
-    });
-    dispatch_async(queue, ^{
-        [NSThread sleepForTimeInterval:1];
-        NSLog(@"dispatch_async2");
-    });
-    dispatch_barrier_async(queue, ^{
-        NSLog(@"dispatch_barrier_async");
-        [NSThread sleepForTimeInterval:0.5];
-        
-    });
-    dispatch_async(queue, ^{
-        [NSThread sleepForTimeInterval:3];
-        NSLog(@"dispatch_async3");
-    });
-    dispatch_async(queue, ^{
-        [NSThread sleepForTimeInterval:1];
-        NSLog(@"dispatch_async4");
-    });</code></pre>
+			<h4 style="padding-top:12px;">5.发布时选择道具一起进入review</h4>
+			<p>刚开时以为只要把app提交了，这个版本的道具也会一并进入Review。但是当我提交后，进和In-App Purchases发现道具的状态还是”ready for submit”；网上说要把二进制包删除了再提交才会出来一个按钮，把道具加入审核；实际上最新版本在你当前准备提交的app itunes后台，选择Build的下方，有一个In-App purchases的选项，在那里把自己的道具添加后，再提交就一切正常了。</p>
+		
 	<h5>前面在异步的并行队列中插入两入block,中间用<strong>dispatch_barrier_async</strong>拦了一下，后面又插入两入block。前两个谁快谁先执行（并行）；当前两个执行完，再执行<strong>dispatch_barrier_async</strong>，最后两在<strong>dispatch_barrier_async</strong>之后并行执行。</h5>
 		</div>
 			
