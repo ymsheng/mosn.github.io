@@ -71,7 +71,20 @@
 				<li>首先创建自己的开源工程，然后把工程在github提交</li>
 				<li>在工程目录下执行(project_name是你自己定义的开源名称)：pod spec create project_name</li>
 				<li>执行完成当前目录下生成一个project_name.podspec的文件，用文本编辑器打开此文件</li>
-				<li>.podspec文件可以参考；请注意他的文件内容，有些#注释的地方要放开;请参考<a href="http://studentdeng.github.io/blog/2013/09/13/cocoapods-tutorial/" target="_blank">项目配置例子</a></li>
+				<li>.podspec文件可以参考；请注意他的文件内容，有些#注释的地方要放开;请参考<a href="http://studentdeng.github.io/blog/2013/09/13/cocoapods-tutorial/" target="_blank">项目配置例子</a>
+					<pre><code>name: 导入pod后的目录名
+						  version: 当前版本号
+ 						 deployment_target: 配置的target
+						 prefix_header_file: 预编译头文件路径，将该文件的内容插入到Pod的pch文件内
+ 						source: 来源的具体路径，是http链接还是本地路径
+ 					   requires_arc: 是否需要arc
+ 					  source_files: 指定该目录下包含哪些文件
+ 					 其他可选参数还包括：
+ 					dependency: 指定依赖，如果依赖的库不存在或者依赖库的版本不符合要求将会报错
+ 				   libraries: 指定导入的库，比如sqlite3
+ 				  frameworks: 指定导入的framework
+ 				 weak_frameworks: 弱链接，比如说一个项目同时兼容iOS6和iOS7，但某一个framework只在iOS7上有，这时候如果用强链接，那么在iOS7上运行就会crash，使用weak_frameworks可以避免这种情况。</code></pre>
+				</li>
 				<li>里面关于s.source_files，这个要注意是你开源文件的目录，不是工程所在目录，如https://github.com/ymsheng/MNFrameRate,我需面写的是s.source_files  = "FrameRate/MNFrameRate/*.{h,m}"</li>
 				<li>其他几个坑：s.license="MIT",s.platform=:ios, s.source= { :git => "https://github.com/ymsheng/MNFrameRate.git", :tag => "0.0.1" }(这是自己开源项目的git地址，和##tag##版本)</li>
 				<li>cocoapods为了区别版本，需要给你每次修改的开源项目打tag</li>
