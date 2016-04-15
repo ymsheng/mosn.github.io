@@ -70,6 +70,8 @@
 				<li>代码有好多，自己去找个博客copy一下</li>
 				<li>对商品信息进行缓存，这样第一步所消耗的时间就会减少。我们应用是在app打开后，获取到所有商品的productId后就进行了第一步操作，并把返回的商品信息(SKProduct)都以productId为key保存到了一个字典中。</li>
 				<li>每次开始购买的时候先从字典中找有没有相关的商品信息(SKProduct)；没有继续第一步操作，反之从字典中取出SKProduct直接开始第二步。研究了几个大厂的应用基本上都第一步很快（应该是加了缓存）。第二步大家都差不多慢</li>
+				<li>可以把SKMutablePayment中的applicationUsername设置为自己业务中的订单号，这样在返回支付状态的时候也会带回来，我们再和服务器做校验base64串的时候一起发回服务器</li>
+				<li>如果没有校验成功的SKPaymentTransaction，请不要调用[[SKPaymentQueue defaultQueue] finishTransaction:transaction];这样苹果每次有支付的时候把未完成的订单发回来给你，这样我们自己不用维护未校验的base64串和订单号(换手机或异常闪退也不用担心)</li>
 				<li>因为看到猿题库的支付分享，说了越狱手机支付带来的风险（新浪微博也不让越狱用户购买），我们也直接判断了如果手机是越狱的，提示不让购买。</li>
 			</p>
 			<h4 style="padding-top:12px;">5.发布时选择道具一起进入review</h4>
