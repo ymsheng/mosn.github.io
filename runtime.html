@@ -40,89 +40,157 @@
 		
 	<div class="container" style="padding-top:64px;">
 		<div class="blog-header">
-			<h3 class="blog-title">GCD的介绍</h3>
-			<p class="lead blog-description">项目开发中我们经常用到异步，同步，串行执行，并行执行，主线程，后台线程.</p>
-			<h4>1.异步vs同步</h4>
-			<p>最简单的说,执行队列里面的block以哪种方式：
-				<li><strong>dispatch_async</strong> - 异步执行的block，不会阻塞他下面的代码执行（如你在异步执行的block里面sleep(10),不会影响其他代码的继续执行）</li>
-				<li><strong>dispatch_sync</strong> - 同步执行的block，直到block里面的代码执行完了才会继续执行他下面的代码</li>
+			<h3 class="blog-title">runtime的理解</h3>
+			<p class="lead blog-description">runtime简称运行时，就是系统在运行的时候的一些机制（主要是消息机制）。对于C语言，函数在编辑的时候已经决定调用哪个函数，编辑完成后直接顺序执行。OC的函数调用为消息发送，只有在真正运行的时候才会根据函数的名称查找对应的函数进行调用。</p>
+			<h4>概念</h4>
+			<p>我们写的代码在程序运行过程中都会被转化成runtime的C代码执行。例如：[target doSomething];会被转化成obj_msgSend(large,@selector(doSomething));
 			</p>
-			<p>拷贝以下代码，在xcode运行查看输出结果；然后修改dispatch_async为dispatch_sync再查看</p>
-			<pre><code>dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0); 
-NSLog(@"---begin----");
-dispatch_async(queue, ^{
-		sleep(7);
-		NSLog(@"----1---");
-});
+			<p>OC中一切都被设计成了对象，当一个类被初始化成一个实例后，这个实例就是一个对象；实际上一个类在OC中也是一个对象，在runtime中用结构体表示。相关的定义：</p>
+			<pre><code>///描述类中的一个方法
+typedef struct objc_method *Method;
+///实例变量
+typedef struct objc_ivar *Ivar;
+///类别Category
+typedef struct objc_category *Category;
+///类中声明的属性
+typedef struct objc_property *objc_property_t;
+
+类在runtime中的表现
+//类在runtime中的表示
+struct objc_class {
+    Class isa;//指针，顾名思义，表示是一个什么，
+    //实例的isa指向类对象，类对象的isa指向元类
+
+#if !__OBJC2__
+    Class super_class;  //指向父类
+    const char *name;  //类名
+    long version;
+    long info;
+    long instance_size
+    struct objc_ivar_list *ivars //成员变量列表
+    struct objc_method_list **methodLists; //方法列表
+    struct objc_cache *cache;//缓存
+    //一种优化，调用过的方法存入缓存列表，下次调用先找缓存
+    struct objc_protocol_list *protocols //协议列表
+    #endif
+} OBJC2_UNAVAILABLE;</code></pre>
+			<h4 style="padding-top:12px;">C方法</h4>
+			<p>之前有一个分享问runtime是什么？他说是指c的方法可以获取类的一些信息（包括属性列表，方法列表，成员变量列表，和遵循的协议列表）。先看代码：</p>
+			<pre><code>#import <objc/runtime.h>
+
+ unsigned int count;
+    //获取属性列表
+    objc_property_t *propertyList = class_copyPropertyList([self class], &count);
+    for (int i=0; i<count; i++) {
+        const char *propertyName = property_getName(propertyList[i]);
+        NSLog(@"property -->>%@",[NSString stringWithUTF8String:propertyName]);
+    }
     
-dispatch_async(queue, ^{
-		sleep(2);
-		NSLog(@"-----2-----");
-});
-NSLog(@"---end----");</code></pre>
-			<h4 style="padding-top:12px;">2.串行vs并行</h4>
-			<pre><code>是指队列里面block排列方式，与异步同步是两个概念：
-				
-dispatch_queue_t queue2 = dispatch_get_main_queue(); 获得的queue2是主线程上的一个串行队列，所有放入到queue2里面的任务是按顺序执行
-
-dispatch_queue_t queue1 = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0); 获取queue1是后台线程上的一个并行队列，所有放入到queue1里面的任务并列表执行不分先后顺序
-
-dispatch_queue_t queue = dispatch_queue_create("my-queue", DISPATCH_QUEUE_SERIAL); 自定义一个后台串行队列；请注意最后一个参数，不是NULL。<strong>DISPATCH_QUEUE_SERIAL</strong>这个参数大家可以看一下它的宏定义就是一个NULL。建议规范写法
-
-dispatch_queue_t queue = dispatch_queue_create("my-queue", DISPATCH_QUEUE_CONCURRENT);自定义一个后台并行队列；请注意最后一个参数，不是NULL。<strong>DISPATCH_QUEUE_CONCURRENT</strong>表示队列是并行的.</code></pre>
-			<h4 style="padding-top:12px;">3.一些误区</h4>
+    //获取方法列表
+    Method *methodList = class_copyMethodList([self class], &count);
+    for (int i=0; i<count; i++) {
+        Method method = methodList[i];
+        NSLog(@"method-->>%@",NSStringFromSelector(method_getName(method)));
+    }
+    
+    //获取成员变量列表
+    Ivar *ivarList = class_copyIvarList([self class], &count);
+    for (int i=0; i<count; i++) {
+        Ivar myIvar = ivarList[i];
+        const char *ivarName = ivar_getName(myIvar);
+        NSLog(@"Ivar---->>%@",[NSString stringWithUTF8String:ivarName]);
+    }
+    
+    ///获取需要实现协议列表
+    __unsafe_unretained Protocol **protocolList = class_copyProtocolList([self class], &count);
+    for (int i=0; i<count; i++) {
+        Protocol *myProtocol = protocolList[i];
+        const char *protocolName = protocol_getName(myProtocol);
+        NSLog(@"protocol--->>%@",[NSString stringWithUTF8String:protocolName]);
+    }
+</code></pre>
+			<h4 style="padding-top:12px;">更多</h4>
 			<p>
-			    <li>dispatch_queue_t queue1 = dispatch_queue_create("my-queue-text", DISPATCH_QUEUE_SERIAL);</li>
-				<li>dispatch_queue_t queue2 = dispatch_queue_create("my-queue-text", DISPATCH_QUEUE_SERIAL);</li>
-					虽然两个queue的标识符都是<strong>my-queue-text</strong>,而且都为串行的，但实际上这是两个不同的队列。他们两的工作队列互不影响。如果你想要保证所有任务串，最好申明一个全局的queue出来。
+实际除了可以通过C的函数获取一些类的信息外（包括方法交换），runtime不仅是这样，还有更多的功能，如果拦截调用，动态添加方法，添加属性。实现这个几方法可以看出，当oc在运行的时候，我们可以动态的为类或对象干更多的事情。
+先了解一下在运行过程中方法调用的过程。
+1.当实例对象调用实例方法;会到实例a的isa指针指向的对象（也就是类对象）中操作。如果直接调用类方法，则会到类对象的isa指针指向的对象（也就是元类对象）中操作。
+2.先在类中的缓存方法列表中找相应的方法，如果找到则转向相应实现并执行方法。
+3.没有在缓存方法列表中找到，则在方法列表中找，如果找到则转向相应实现并执行方法。并把此方法加放到缓存，方便下次调用 。
+4.如果还没有找到，去父类指针指向的对象中执行2，3；以此类推，一直到根类还没有找到，转向上文提到的拦截调用。
+5.如果没有重写拦截调用的方法，程序报错。
 			</p>
-			<h4>4.dispatch_after</h4>
-			<p>开发中经常有一些延迟几秒后的操作我们会用dispatch_after。after几秒指的是将一个Block在特定的延时以后，加入到指定的队列中，不是在特定的时间后立即运行！。（重要的话说三遍）</p>
-			<pre><code>dispatch_queue_t queue = dispatch_queue_create("my-fifo-queue", DISPATCH_QUEUE_SERIAL); //一个后台串行队列
-NSLog(@"------begin-----");
-dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), queue, ^{
-	  NSLog(@"----after 2s----");
-});
-
-dispatch_async(queue, ^{
-	  sleep(5);
-	  NSLog(@"-----3-----");
-});
-				
-NSLog(@"------end-----");</code></pre>
-			<p>以上代码解析：<br>
-			1.在后台创建一个串行队列<br>
-			2.在2秒后插入一个block（此block的功能只打印after 2s)<br>
-			3.在队列中插入另一个block（此block线程睡5s后打印3）<br><br>
-			输出结果：begin,end,3,after 2s; <br> 因为是一个异步操作，所以执行的block不会阻塞后面代码的打印（输入出begin,end);因为dispatch_after是延迟2s后才把block插入到队列中，所以队列是第一个插入的是“打印3”；但是”打印3“在队列里执行的时候睡了5s，只有等到7s的时候才会把”after2s“的block插入并执行。
+			<p>关于重写父类的方法,只是在当前类对象中找到了这个方法后，就不会在父类中查找了。如果想调用父类的方法，需要使用super这个编译器标识，它会在运行时跳过当前的类对象直接去父类中查找。</p>
+			<h4 style="padding-top:12px;">考题</h4>
+			<p>下面这个题和上面的解释有点绕：</p>
+			<pre><code>@implementation Son : Father
+- (id)init
+{
+    self = [super init];
+    if (self)
+    {
+        NSLog(@"%@", NSStringFromClass([self class]));
+        NSLog(@"%@", NSStringFromClass([super class]));
+    }
+    return self;
+}
+@end</code></pre>
+			<p>输入结果是两个Son;原理请看http://www.cocoachina.com/ios/20141224/10740.html </p>
 			
-			</p>
-			<h4 style="padding-top:12px;">4.有意思的栅栏dispatch_barrier_async</h4>
-			<p>一个dispatch barrier 允许在一个并发(只有并发才有意义)队列中创建一个同步点。当在并发队列中遇到一个barrier, 他会延迟执行barrier的block,等待所有在barrier之前提交的blocks执行结束。 这时，barrier block自己开始执行。 之后， 队列继续正常的执行操作</p>
-			<pre><code> dispatch_queue_t queue = dispatch_queue_create("gcdtest.rongfzh.yc", DISPATCH_QUEUE_CONCURRENT);
-    
-    dispatch_async(queue, ^{
-        [NSThread sleepForTimeInterval:3];
-        NSLog(@"dispatch_async1");
-    });
-    dispatch_async(queue, ^{
-        [NSThread sleepForTimeInterval:1];
-        NSLog(@"dispatch_async2");
-    });
-    dispatch_barrier_async(queue, ^{
-        NSLog(@"dispatch_barrier_async");
-        [NSThread sleepForTimeInterval:0.5];
-        
-    });
-    dispatch_async(queue, ^{
-        [NSThread sleepForTimeInterval:3];
-        NSLog(@"dispatch_async3");
-    });
-    dispatch_async(queue, ^{
-        [NSThread sleepForTimeInterval:1];
-        NSLog(@"dispatch_async4");
-    });</code></pre>
-	<h5>前面在异步的并行队列中插入两入block,中间用<strong>dispatch_barrier_async</strong>拦了一下，后面又插入两入block。前两个谁快谁先执行（并行）；当前两个执行完，再执行<strong>dispatch_barrier_async</strong>，最后两在<strong>dispatch_barrier_async</strong>之后并行执行。</h5>
+			<p>实际还有一个有意思的题：</p>
+			<pre><code> 1.NSMutableArray *ary = [[NSString alloc] initWithString:@"test"];
+ 2. [ary addObject:@"error"];
+</code></pre>
+<p>
+	<li>第一行代码，编译有警告，运行可以通过，第二行代码编译没问题，运行报错。</li>
+<li>这也算是runtime中的一种，ary对象在运行的时候指向了一个NSString的地址。但是在运行的在NSString中无法找到addObject方法，会报-[__NSCFConstantString addObject:]: unrecognized selector sent to instance 。字符串没有找到相关addObject的方法。</li>
+<li>考点：OC只有在真正运行的时候才会根据函数的名称查找对应的函数进行调用。</li>
+</p>
+	
+				<h4 style="padding-top:12px;">拦截调用 ：</h4>
+				<p>上面的说到了，如果ary没有找到addObject的方法，就会转向拦截调用，拦截调用是指在找不到调用的方法程序崩溃之前，我们可以重写NSObject的四个方法来处理：
++ (BOOL)resolveClassMethod:(SEL)sel;
++ (BOOL)resloveInstanceMethod:(SEL)sel;
+///后两个方法需要转发到其他的类处理
+- (id)forwardingTargetForSelector:(SEL)aSelector;
+- (void)forwardInvocation:(NSInvocation *)anInvocation;
+
+<li>1.方法一当你调用一个不存在的类方法时，会调用这个方法，默认返回NO;你可以加上自己的处理然后返回YES;</li>
+<li>2.方法二同上，只不是处理的实例方法。</li>
+<li>3.方法三是将你调用的不存在的方法重定向到一个其他声明了这个方法的类，只需要你返回一个有这个方法的target；</li>
+<li>4.方法四是将你调用的不存在的方法打包成NSInvocation传给你，做完你自己的处理后，调用invaokeWithTarget：方法让某个target触发这个方法。</li>
+</p>
+			
+							<h4 style="padding-top:12px;">动态添加方法：</h4>
+							<p>这个是基于上面的拦截调用来实现的，当前对象调用的方法无法在方法列表中找到时，就会调用 + (BOOL)resloveInstanceMethod:(SEL)sel; 而这时我们可以在里面直接加一个方法</p>
+			
+				<pre><code>void dynamicMethodIMP(id self, SEL _cmd) {  //定义一个新方法
+    NSLog(@" >> dynamicMethodIMP");
+}
+
+///当前对象的方法没有被找到时，会调用 resolveInstanceMethod，我们里面把没有找到的方法替换为了dynamicMethodIMP。
++ (BOOL)resolveInstanceMethod:(SEL)sel
+{
+    class_addMethod([self class], sel, (IMP)dynamicMethodIMP, "v@:");
+    return [super resolveClassMethod:sel];
+}</code></pre>
+
+							<h4 style="padding-top:12px;">添加属性：</h4>
+							<p>这个我们直接 在NSObject里面的扩展加了一个方法</p>
+			
+				<pre><code>//添加关联对象
+- (void)addAssociatedObject:(id)object{
+    objc_setAssociatedObject(self, @selector(getAssociatedObject), object, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+//获取关联对象
+- (id)getAssociatedObject{
+    return objc_getAssociatedObject(self, _cmd);
+}</code></pre>
+<p>注意：这里不用声明一个全局变量（用它的地址作为关联对象的key），而是用getAssociatedObject的方法地址作为唯一的key，_cmd代码当前调用方法的地址
+
+在runtime中，我们还有方法交换的姿势没有说。
+</p>
+
+<h5>合理使用+(void)load{}  load方法会在类第一次加载的时候被调用,调用的时间比较靠前</h5>
 		</div>
 			
 	</div>

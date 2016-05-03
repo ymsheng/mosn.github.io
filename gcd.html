@@ -45,7 +45,7 @@
 			<h4>1.异步vs同步</h4>
 			<p>最简单的说,执行队列里面的block以哪种方式：
 				<li><strong>dispatch_async</strong> - 异步执行的block，不会阻塞他下面的代码执行（如你在异步执行的block里面sleep(10),不会影响其他代码的继续执行）</li>
-				<li><strong>dispatch_sync</strong> - 同步执行的block，直到block里面的代码执行完了才会继续执行他下面的代码</li>
+				<li><strong>dispatch_sync</strong> - 同步执行的block，直到block里面的代码执行完了才会继续执行他下面的代码（主线程注意会造成死锁）</li>
 			</p>
 			<p>拷贝以下代码，在xcode运行查看输出结果；然后修改dispatch_async为dispatch_sync再查看</p>
 			<pre><code>dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0); 
