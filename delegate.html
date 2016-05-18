@@ -43,7 +43,7 @@
 			<h3 class="blog-title">BLOCKS OR DELEGATES</h3>
 			<p class="lead blog-description">有人曾问了一个精典的问题,我们在回调中使用block还是delegate呢？
 				在这个问题中，我们先了解一下苹果在遇到这种问题是怎么选择的。我们可以通过官方文档看到在哪些情况下会选择delegate，哪些选择使用了delegate。通过了解苹果的选择，我们可以推导出一些规则。</p>
-				<h4>如果在官方文档中查找</h4>
+				<h4>如何在官方文档中查找</h4>
 				<p>如何在庞大的文档中找出相关的内容呢，delegate我们可以直接搜索“delegate”这个关键词，而block我们不能直接搜索^,当苹果在使用block的时候，会包括以下关键词：Handler, Completion,Block。</p>
 			
 				<h4 style="padding-top:12px;">1.If an object has more than one distinct event, use delegation.</h4>
@@ -63,7 +63,7 @@
 			<p>理解：如UIWebview在加载的过程中，当链接将要被打开时，页面加载结果，加载失败等过程都是以delegate来实现回调的，而系统的“presentViewController: animated: completion:”方法的completion是指当弹出页面结束时的一个回调。实际这个界线不是很明显。</p>
 			
 			<h4 style="padding-top:12px;">5.block会快于delegate（maybe?)。</h4>
-			<p>理解：AVPlayer的播放时间回调中，这更多像一个过程，而不是一个结果。因些参考第4点的话，我们更应该使用delegate。但是实际上这个回调使用的是block,推测可能是为了提高方法调用的速度，block可以直接被调用，不然每秒几百次回调，用delegate的话方法查找可能会降低响应速度。</p>
+			<p>理解：AVPlayer的播放时间回调中，这更多像一个过程，而不是一个结果。因些参考第4点的话，我们更应该使用delegate。但是实际上这个回调使用的是block,推测可能是为了提高方法调用的速度，block可以直接被调用，不然每秒几百次回调，用delegate的话方法查找(runtime实现)可能会降低响应速度。</p>
 			
 
 			</div>
