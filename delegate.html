@@ -40,163 +40,38 @@
 		
 	<div class="container" style="padding-top:64px;">
 		<div class="blog-header">
-			<h3 class="blog-title">runtime的理解</h3>
-			<p class="lead blog-description">runtime简称运行时，就是系统在运行的时候的一些机制（主要是消息机制）。对于C语言，函数在编辑的时候已经决定调用哪个函数，编辑完成后直接顺序执行。OC的函数调用为消息发送，只有在真正运行的时候才会根据函数的名称查找对应的函数进行调用。</p>
-			<h4>概念</h4>
-			<p>我们写的代码在程序运行过程中都会被转化成runtime的C代码执行。例如：[target doSomething];会被转化成obj_msgSend(large,@selector(doSomething));
-			</p>
-			<p>OC中一切都被设计成了对象，当一个类被初始化成一个实例后，这个实例就是一个对象；实际上一个类在OC中也是一个对象，在runtime中用结构体表示。相关的定义：</p>
-			<pre><code>///描述类中的一个方法
-typedef struct objc_method *Method;
-///实例变量
-typedef struct objc_ivar *Ivar;
-///类别Category
-typedef struct objc_category *Category;
-///类中声明的属性
-typedef struct objc_property *objc_property_t;
-
-类在runtime中的表现
-//类在runtime中的表示
-struct objc_class {
-	Class isa;//指针，顾名思义，表示是一个什么，
-	//实例的isa指向类对象，类对象的isa指向元类
-
-	#if !__OBJC2__
-		Class super_class;  //指向父类
-		const char *name;  //类名
-		long version;
-		long info;
-		long instance_size
-		struct objc_ivar_list *ivars //成员变量列表
-		struct objc_method_list **methodLists; //方法列表
-		struct objc_cache *cache;//缓存
-		//一种优化，调用过的方法存入缓存列表，下次调用先找缓存
-		struct objc_protocol_list *protocols //协议列表
-	#endif
-} OBJC2_UNAVAILABLE;</code></pre>
-				<h4 style="padding-top:12px;">C方法</h4>
-				<p>之前有一个分享问runtime是什么？他说是指c的方法可以获取类的一些信息（包括属性列表，方法列表，成员变量列表，和遵循的协议列表）。先看代码：</p>
-				<pre><code>#import &lt;objc/runtime.h&gt;
-
-	unsigned int count;
-	//获取属性列表
-	objc_property_t *propertyList = class_copyPropertyList([self class], &count);
-	for (int i=0; i&lt;count; i++) {
-		const char *propertyName = property_getName(propertyList[i]);
-		NSLog(@"property -->>%@",[NSString stringWithUTF8String:propertyName]);
-	}
-    
-	//获取方法列表
-	Method *methodList = class_copyMethodList([self class], &count);
-	for (int i=0; i&lt;count; i++) {
-		Method method = methodList[i];
-		NSLog(@"method-->>%@",NSStringFromSelector(method_getName(method)));
-	}
-    
-	//获取成员变量列表
-	Ivar *ivarList = class_copyIvarList([self class], &count);
-	for (int i=0; i&lt;count; i++) {
-		Ivar myIvar = ivarList[i];
-		const char *ivarName = ivar_getName(myIvar);
-		NSLog(@"Ivar---->>%@",[NSString stringWithUTF8String:ivarName]);
-	}
-    
-	///获取需要实现协议列表
-	__unsafe_unretained Protocol **protocolList = class_copyProtocolList([self class], &count);
-	for (int i=0; i&lt;count; i++) {
-		Protocol *myProtocol = protocolList[i];
-		const char *protocolName = protocol_getName(myProtocol);
-		NSLog(@"protocol--->>%@",[NSString stringWithUTF8String:protocolName]);
-	}
-</code></pre>
-				<h4 style="padding-top:12px;">更多</h4>
-				<p>
-					实际除了可以通过C的函数获取一些类的信息外（包括方法交换），runtime不仅是这样，还有更多的功能，如果拦截调用，动态添加方法，添加属性。实现这个几方法可以看出，当oc在运行的时候，我们可以动态的为类或对象干更多的事情。
-					先了解一下在运行过程中方法调用的过程。
-					<li>1.当实例对象调用实例方法;会到实例a的isa指针指向的对象（也就是类对象）中操作。如果直接调用类方法，则会到类对象的isa指针指向的对象（也就是元类对象）中操作。</li>
-					<li>2.先在类中的缓存方法列表中找相应的方法，如果找到则转向相应实现并执行方法。</li>
-					<li>3.没有在缓存方法列表中找到，则在方法列表中找，如果找到则转向相应实现并执行方法。并把此方法加放到缓存，方便下次调用 。</li>
-					<li>4.如果还没有找到，去父类指针指向的对象中执行2，3；以此类推，一直到根类还没有找到，转向上文提到的拦截调用。</li>
-					<li>5.如果没有重写拦截调用的方法，程序报错。</li>
-				</p>
-				<p>关于重写父类的方法,只是在当前类对象中找到了这个方法后，就不会在父类中查找了。如果想调用父类的方法，需要使用super这个编译器标识，它会在运行时跳过当前的类对象直接去父类中查找。</p>
-				<h4 style="padding-top:12px;">考题</h4>
-				<p>下面这个题和上面的解释有点绕：</p>
-				<pre><code>@implementation Son : Father
-- (id)init
-{
-    self = [super init];
-    if (self)
-    {
-        NSLog(@"%@", NSStringFromClass([self class]));
-        NSLog(@"%@", NSStringFromClass([super class]));
-    }
-    return self;
-}
-@end</code></pre>
-					<p>输入结果是两个Son;原理请看http://www.cocoachina.com/ios/20141224/10740.html </p>
+			<h3 class="blog-title">BLOCKS OR DELEGATES</h3>
+			<p class="lead blog-description">有人曾问了一个精典的问题,我们在回调中使用block还是delegate呢？
+				在这个问题中，我们先了解一下苹果在遇到这种问题是怎么选择的。我们可以通过官方文档看到在哪些情况下会选择delegate，哪些选择使用了delegate。通过了解苹果的选择，我们可以推导出一些规则。</p>
+				<h4>如果在官方文档中查找</h4>
+				<p>如何在庞大的文档中找出相关的内容呢，delegate我们可以直接搜索“delegate”这个关键词，而block我们不能直接搜索^,当苹果在使用block的时候，会包括以下关键词：Handler, Completion,Block。</p>
 			
-					<p>实际还有一个有意思的题：</p>
-					<pre><code> 1. NSMutableArray *ary = [[NSString alloc] initWithString:@"test"];
-2. [ary addObject:@"error"];
-					</code></pre>
-					<p>
-						<li>第一行代码，编译有警告，运行可以通过，第二行代码编译没问题，运行报错。</li>
-						<li>这也算是runtime中的一种，ary对象在运行的时候指向了一个NSString的地址。但是在运行的在NSString中无法找到addObject方法，会报-[__NSCFConstantString addObject:]: unrecognized selector sent to instance 。字符串没有找到相关addObject的方法。</li>
-						<li>考点：OC只有在真正运行的时候才会根据函数的名称查找对应的函数进行调用。</li>
-					</p>
-	
-					<h4 style="padding-top:12px;">拦截调用 ：</h4>
-					<p>上面的说到了，如果ary没有找到addObject的方法，就会转向拦截调用，拦截调用是指在找不到调用的方法程序崩溃之前，我们可以重写NSObject的四个方法来处理：<br>
-						+ (BOOL)resolveClassMethod:(SEL)sel;<br>
-						+ (BOOL)resloveInstanceMethod:(SEL)sel;<br>
-						///后两个方法需要转发到其他的类处理<br>
-						- (id)forwardingTargetForSelector:(SEL)aSelector;<br>
-						- (void)forwardInvocation:(NSInvocation *)anInvocation;<br>
-
-						<li>1.方法一当你调用一个不存在的类方法时，会调用这个方法，默认返回NO;你可以加上自己的处理然后返回YES;</li>
-						<li>2.方法二同上，只不是处理的实例方法。</li>
-						<li>3.方法三是将你调用的不存在的方法重定向到一个其他声明了这个方法的类，只需要你返回一个有这个方法的target；</li>
-						<li>4.方法四是将你调用的不存在的方法打包成NSInvocation传给你，做完你自己的处理后，调用invaokeWithTarget：方法让某个target触发这个方法。</li>
-					</p>
+				<h4 style="padding-top:12px;">1.If an object has more than one distinct event, use delegation.</h4>
+				<p>如果一个对象有多个明确的响应事件，请用delegate.</p>
+				<p>理解：如果要回调另一个对象时，只有一个方法的时候优先使用block，但是超过一个回调方法的时候，如果继续使用block的话，需要在block里面多传一个type的字段，来对应不同状态处理。但是使用delegate的话，就不用考虑type了，因为可以在发起调用的时候就判断好要调用哪个方法。把选择方法业务最相关的地方。</p>
 			
-					<h4 style="padding-top:12px;">动态添加方法：</h4>
-					<p>这个是基于上面的拦截调用来实现的，当前对象调用的方法无法在方法列表中找到时，就会调用 + (BOOL)resloveInstanceMethod:(SEL)sel; 而这时我们可以在里面直接加一个方法</p>
+			<h4 style="padding-top:12px;">2.If an object is a singleton, we can't use delegation.</h4>
+			<p>当前对象一个单例的时候，我们就不能再使用delegate</p>
+			<p>理解：当在多个业务控制器中使用单例，并给这个单例设置不同的delegate时，会导致前面的赋值被覆盖.假如CLLocationManager是一个单例对象（实际上它不是），我们在A页面设置了delegate用来监听位置的变换，如果切换到B页面我们把CLLocationManager的delegate绑定到了B上（B上面也要求监听位置的变换），如果我们再回A的时候，CLLocationManager这个单例对象的delegate现在已绑定在了B的实例上。所以我们就不能用delegate。</p>
 			
-					<pre><code>void dynamicMethodIMP(id self, SEL _cmd) {  //定义一个新方法
-	NSLog(@" >> dynamicMethodIMP");
-}
-
-///当前对象的方法没有被找到时，会调用 resolveInstanceMethod，我们里面把没有找到的方法替换为了dynamicMethodIMP。
-+ (BOOL)resolveInstanceMethod:(SEL)sel
-{
-	class_addMethod([self class], sel, (IMP)dynamicMethodIMP, "v@:");
-	return [super resolveClassMethod:sel];
-}</code></pre>
-
-					<h4 style="padding-top:12px;">添加属性：</h4>
-					<p>这个我们直接 在NSObject里面的扩展加了一个方法</p>
 			
-					<pre><code>//添加关联对象
-- (void)addAssociatedObject:(id)object{
-	objc_setAssociatedObject(self, @selector(getAssociatedObject), object, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-//获取关联对象
-- (id)getAssociatedObject{
-	return objc_getAssociatedObject(self, _cmd);
-}</code></pre>
-						<p>注意：这里不用声明一个全局变量（用它的地址作为关联对象的key），而是用getAssociatedObject的方法地址作为唯一的key，_cmd代码当前调用方法的地址
-
-							在runtime中，我们还有方法交换的姿势没有说。
-						</p>
-
-						<h5>合理使用+(void)load{}  load方法会在类第一次加载的时候被调用,调用的时间比较靠前</h5>
-					</div>
+			<h4 style="padding-top:12px;">3.If the object is calling back for additional information, we'll probably use delegation. </h4>
+			<p>理解：当我们期望回调方法有返回值的时候，如UITableView的dataSource场景，我们使用的是delegate。这里不用block的原因是block里面的内容是一个镜像出来的，不是数据当前最真实的状态。</p>
 			
-				</div>
+			<h4 style="padding-top:12px;">4.delegate callbacks are more process oriented（or multi-step process） and blocks are more results oriented.</h4>
+			<p>delegate的回调是以过程为导向，block更多的是结果导向。</p>
+			<p>理解：如UIWebview在加载的过程中，当链接将要被打开时，页面加载结果，加载失败等过程都是以delegate来实现回调的，而系统的“presentViewController: animated: completion:”方法的completion是指当弹出页面结束时的一个回调。实际这个界线不是很明显。</p>
+			
+			<h4 style="padding-top:12px;">5.block会快于delegate（maybe?)。</h4>
+			<p>理解：AVPlayer的播放时间回调中，这更多像一个过程，而不是一个结果。因些参考第4点的话，我们更应该使用delegate。但是实际上这个回调使用的是block,推测可能是为了提高方法调用的速度，block可以直接被调用，不然每秒几百次回调，用delegate的话方法查找可能会降低响应速度。</p>
+			
+
+			</div>
+			
+		</div>
 	
 	
-			</body>
-			</html>
+	</body>
+	</html>
 
 
