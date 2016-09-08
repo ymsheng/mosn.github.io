@@ -56,7 +56,10 @@
 			<h4 style="padding-top:12px;">3.在LLDB调试的时候很多变量PO不出来</h4>
 			<p></p>
 			<pre>p UIScreen.mainScreen.bounds 会报error:property 'bounds' not found on object of type 'id'<br>先执行 expr @import UIKit<br>再执行 p UIScreen.mainScreen.bounds<br></pre>
-
+			<h4 style="padding-top:12px;">4.NavigationBar的返回按钮出现...</h4>
+			<p></p>
+			<pre>[[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0, -60) forBarMetrics:UIBarMetricsDefault];</pre>
+		
 		</div>
 	</div>
 	
