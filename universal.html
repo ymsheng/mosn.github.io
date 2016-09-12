@@ -60,18 +60,8 @@
 			<li>8.在AppDelegate里面增加- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray * _Nullable))restorationHandler</li>
 			<li>9.生成一个叫apple-app-site-association的文件（没有后缀）,主要注意appID的写法（TeamID+app的BundleID,可以在开发者后台的团队标识找到）</li>
 			<pre><code>
-				{
-				   "applinks": {
-				   	"apps":[],
-					"details":[
-					{
-					"appID":"382349ZQJ3.com.yourcompany.name",
-					"paths":["/wwdc/news/"]
-					}
-					]
-				   }
-				}
-				</code></pre>
+				{ "applinks": { "apps":[], "details":[ { "appID":"382349ZQJ3.com.yourcompany.name", "paths":["/wwdc/news/"] } ] } }
+			</code></pre>
 		</p>
 		<h4 style="padding-top:12px;">3.服务器端的工作</h4>
 		<p>
