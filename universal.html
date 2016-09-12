@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<title>mosn's blog</title>
+	<!-- 新 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/index.html">mosn blog</a>
+			</div>
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="/tips.html">iOS开发</a></li>
+					<li><a href="/swift.html">swift开发</a></li>
+					<li><a href="/cocoapods.html">CocoaPods相关</a></li>
+					<li><a href="/black.html">黑科技</a></li>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</nav>
+		
+	<div class="container" style="padding-top:64px;">
+		<div class="blog-header">
+			<h3 class="blog-title">iOS9 Universal Link</h3>
+			<p class="lead blog-description">深层链接技术.一种能够方便的通过传统 HTTP 链接来启动 APP, 使用相同的网址打开网站和 APP</p>
+			<h4>1.Universal Link Vs Scheme</h4>
+			<p>Scheme大家都很熟悉，使用openURL可以在webview或其他app，打开我们想要去的app，iOS9在plist增加了LSApplicationQueriesSchemes，需要开发者把想要打开app列出来，这样openURL的时候才能打开，<br>
+			   但是在微信等app里面我们打开一个webview，却无法进行跳转（因为微信把跳转都进行了拦截）。只能通过打开手机上的safari进行打开我们的app。
+			   iOS9出了Universal Link后我们就可自由的打开自己的app了。还有一个好处是即使没有安装客户端可以打开一个正常的url。这样用户在使用的时候就不会有体验阻断。
+			</p>
+		
+			<h4 style="padding-top:12px;">2.实现Universal Linke （app端）</h4>
+			<p>
+				<li>1.登录苹果开发者后台，选择Identifiers下的App IDs</li>
+				<li>2.然后选择对应项目的app name，进行编辑；在Associated Domains前面使用该功能；保存修改</li>
+				<li>3.重新生成AdHoc和Distribution的描述文件</li>
+				<li>4.打开自己项目，选择Target左边的Capabilities；</li>
+				<li>5.打开Associated Domains的开关;</li>
+				<li>6.增加Domains;以applinks开头，再加上你自己的服务器域名(如applinks:www.yourhost.com)</li>
+				<li>7.重新安装了第三步生成的描述文件后，重启Xcode.Steps应该就变成对勾了</li>
+				<li>8.在AppDelegate里面增加- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray * _Nullable))restorationHandler</li>
+				<li>9.生成一个叫apple-app-site-association的文件（没有后缀）,主要注意appID的写法（TeamID+app的BundleID,可以在开发者后台的团队标识找到）</li>
+				<pre><code>
+					{
+					   "applinks": {
+					   	"apps":[],
+						"details":[
+						{
+						"appID":"382349ZQJ3.com.yourcompany.name",
+						"paths":["/wwdc/news/"]
+						}
+						]
+					   }
+					}
+					</code></pre>
+			</p>
+			<h4 style="padding-top:12px;">3.服务器端的工作</h4>
+			<p>
+			    <li>1.确认服务器使用的是https，iOS9大家都在普及，所以不考虑http的服务器</li>
+				<li>2.上面第九步生成apple-app-site-association放到根目录（保证https://www.yourhost.com/apple-app-site-association 可以下载到上面的代码即可，不一定非放到根目录）;</li>
+				<li>3.上面这个文件在什么时候会被调用呢？当应用安装完启动时会从服务器调用https://www.yourhost.com/apple-app-site-association，下载这个文件，然后手机上的safari,webview等都会共享到这个文件，相当于告知手机系统，当打开https://www.yourhost.com/wwdc/news/的时候直打开对应的app</li>
+				<li>4.iOS9.2以上需要跨域才能打开？如果你在www.yourhost.com下打开 https://www.yourhost.com/wwdc/news/ 是不能调起app的。必须是在另一个域名下调用https://www.yourhost.com/wwdc/news/才可以打开app;</li>
+				<li>5.我把https://www.yourhost.com/wwdc/news/这个链接发在了我的微博上，然后用手机上的safari打开微博打开这个链接，点击就可以打开我的app了。这就是相当于在www.sina.com的域名下调用www.yourhost.com/wwdc/news/；实现了跨域。</li>
+				<li>6.经测试二级域名改变也算跨域。即 test.yourhost.com下打开www.yourhost.com/wwdc/news/也是可以调用起app的</li>
+			</p>
+	</div>
+			
+	</div>
+	
+	
+</body>
+</html>
+
+
