@@ -42,7 +42,7 @@
 		<div class="blog-header">
 <h3 class="blog-title">简单的Router</h3>
 <p class="lead blog-description">开发中经常有子视图需要把事件传递给父视图，除了代理和block还有更好的选择，这里记录一下tsaievan的Router.</p>
-<h4>首先实现UIResponder的一个扩展</h4>
+<h4>1.首先实现UIResponder的一个扩展</h4>
 <pre><code class="html">
 @interface UIResponder (Router)
 - (void)routerWithEventName:(NSString *)eventName userInfo:(NSDictionary *)userInfo;
@@ -59,7 +59,7 @@
 </code></pre>
 
 	
-<h4>在ViewController实现对事件的实际处理</h4>
+<h4>2.在ViewController实现对事件的实际处理</h4>
 <pre><code class="html">
 - (void)routerWithEventName:(NSString *)eventName userInfo:(NSDictionary *)userInfo {
     if ([eventName isEqualToString:YourCustomNameEvent]) {
@@ -69,7 +69,7 @@
 }
 </code></pre>
 
-<h4>在子视图的cell上准备传递事件</h4>
+<h4>3.在子视图的cell上准备传递事件</h4>
 <pre><code class="html">
 - (void)buttonClickAction:(UIButton *)sender {
     [sender routerWithEventName:YourCustomNameEvent userInfo:@{
@@ -78,7 +78,7 @@
 }
 </code></pre>
 
-<h4>可以断点一步一步的调试一下，事件响应链会把消息一层层向上传递，直到最上层有对象对这个消息负责并响应</h4>
+<h4>#MORE 可以断点一步一步的调试一下，事件响应链会把消息一层层向上传递，直到最上层有对象对这个消息负责并响应时，会结束传递</h4>
 	</div>	
 	
 </body>
