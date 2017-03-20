@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" href="/favicon.ico">
+	<title>mosn's blog</title>
+	<!-- 新 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/index.html">mosn blog</a>
+			</div>
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="/tips.html">iOS开发</a></li>
+					<li><a href="/swift.html">swift开发</a></li>
+					<li><a href="/cocoapods.html">CocoaPods相关</a></li>
+					<li><a href="/black.html">黑科技</a></li>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</nav>
+		
+	<div class="container" style="padding-top:64px;">
+		<div class="blog-header">
+			<h3 class="blog-title">编译相关</h3>
+			<p class="lead blog-description">作为一个开发者，我们很多时候要了解编译器到底在做什么，本文主要就库与xcode的设置作一些介绍.</p>
+			<h4>1.什么是库？</h4>
+			<p>简单的说,库就是编译好的二进制文件，编译的时候只需要link一下；库为分静态库和动态库：
+				<li><strong>静态库</strong> - 静态链接库，如.a文件；之所以叫做静态库，是因为静态库在编译的时候会被直接拷贝一份，复制到目标程序里</li>
+				<li><strong>动态库</strong> - 动态链接库，如.dylib;动态库在编译时并不会被拷贝到目标程序中，目标程序中只会存储指向动态库的引用。等到程序运行时，动态库才会被真正加载进来</li>
+			</p>
+			<p>两者的优缺点:
+				<li><strong>静态库:</strong>
+					优点：编译完成后，库文件实际上就没有作用了。目标程序没有外部依赖，可以直接运行
+					缺点：目标程序的体积增大
+				</li>
+				</li><strong>动态库:</strong>
+					优点：不需要拷贝到目标程序中，不影响包体积；而且同一份库可以被多个程序使用，所以也称共享库；编译时才载入可以对库进行替换而不需要重新编译
+					缺点：动态载入带来性能损失，也使得目标程序依赖于外环境。如不同iOS系统下动态库的接口不同导致报错
+				</li>
+			</p>
+			<h4 style="padding-top:12px;">2.Architecture</h4>
+			<p>
+			<strong>Architectures</strong>编译选项指定了工程将被编译成支持哪些指令集。支持指令集是通过编译生成对应的二进制数据包实现的，如果支持的指令集数据有多个，就会编译出包含多个指令集代码的数据包，造成最终编译的包很大。
+			</p>
+			<p>
+				<strong>Valid Architectures</strong>该编译选项指定了可能支持的指令集，该列表和Architectures列表的交集，将是Xcode最终生成二进制包所支持的指令集。
+			</p>
+			<p>
+				<strong>如何选择支持的指令集</strong>如果软件对安装包大小非常敏感，可以减少安装包中的指令集。如只支持armv7指令集。不对对于armv7s/arm64指令集设备来说，运行armv7应用是会有一定的性能损失。具体多少目前没有数据。
+			</p>
+			<h4 style="padding-top:12px;">3.指令集</h4>
+			<p>
+			   <strong>什么是指令集：</strong>存储在CPU内部，对CPU运算进行指导和优化的硬程序。
+			   <strong>什么是ARM：</strong>ARM架构过去称作进阶精简指令集机器(Advanced RISC Machine).是一个32位元精简指令集（RISC）中央处理器架构。也称RISC微处理器。
+			   CISC（复杂指令集计算机）和RISC（精简指令集计算机）是当前CPU的两种架构。RISC结构优先选取使用频最高的简单指令，避免复杂指令；将指令长度固定，指令格式和寻址方式种类减少；以控制逻辑为主，不用或减少微码控制等。
+			   <strong>不同指令集适配：</strong>
+			   <li>armv6:iPhone3GS以下</li>
+			   <li>armv7:3GS以上~iPhone4</li>
+			   <li>armv7s:iPhone5~iPhone5s以下</li>
+			   <li>arm64:iPhone5s及以上</li>
+			</p>
+			<h4 style="padding-top:12px;">4.Search Paths（搜索路径）</h4>
+			<p>
+				<li><strong>Header Search Paths:</strong>外部头文件路径一般设置为$(SRCROOT)/../include</li>
+				<li><strong>Library Search Path:</strong>库搜索路径一般设置为$(SCRROOT)/ .a文件所在的文件路径</li>
+				<li><strong>Other Linker Flags:</strong>链接器参数，如-ObjC,-all_load,-force_load等。</li>
+			</p>
+			<h4 style="padding-top:12px;">5.编译与链接</h4>
+			<p>
+				C代码到可执行文件经历：源代码->预处理器->编译器->汇编器->机器码->链接器->可执行文件（Mach-O）。
+				预处理：处理源文件中的宏定义，将代码中的宏用其对应的具体内容进行替换；import某个头文件，会用此头文件中的<strong>内容</strong>去替换这么代码。
+				<strong>链接器</strong>一个.c或.cpp文件就是一个编译单元，编译后产生一个.o目标文件；为了最终生成一个可执行文件、静态库或动态库，就需要把各个编译单元按照特定的约定组合到一起（这里特定的约定指的就是目标文件格式），它定义了目标文件、库文件和可执行文件的格式，这里组合的过程就叫做链接。
+				在最后一步需要把.o文件和C语言运行库链接起来，这时候需要用到ld命令，而Other Linker Flags设置的值实际上就是ld命令执行时后面所加的参数。
+				<li>-ObjC:链接器会把静态库中所有objectvie-c类和分类都加载到最后的可执行文件中，当静态库中有类和category的时候必须要加这个flag。</li>
+				<li>-all_load:当在静态库中只有category没有类的时候使用-ObjC，这些category是加载不进去的。这时候就要使用-all_load了。-all_load会让链接器把所有找到的目标文件都加载到可执行文件中。但是不能轻易使用这个参数，如果同时使用多个静态库，不同的库文件可能会有相同的目标文件，导致编译错误：ld duplicate symbol。</li>
+				<li>-force_load:所做的事情和-all_load其实是一样的，但是-force_load需要指定要进行全部加载的库文件路径，这样的话只是完全加载了一个库文件，不影响其他库文件的按需加载（-force_load $(BUILT_PRODUCTS_DIR)/libarc.a）</li>
+			</p>
+			<h4 style="padding-top:12px;">6.Build Phases</h4>
+			<p>
+				<li><strong>Compile Sources:</strong>指定了所有必须进行编译的文件</li>
+				<li><strong>Link Binary with Libraries:</strong>当编译结束，下一步就是将所有的内容链接到一块。这里列出了所有的静态库和动态库。这些库会与上面编译阶段生成的目标文件进行链接。</li>
+				<li><strong>Copy bundle Resource</strong>当链接完成之后，build phase中最后需要处理的就是将静态资源（图片和字体）拷贝到app的bundle中。其中png的图片不仅仅是拷贝，还会做一些优化。</li>
+			</p>
+			<h4 style="padding-top:12px;">7.Build Rules</h4>
+			<p>指定不同文件类型该如何编译。每一条build rule指定了其应用于哪种文件类型，该文件类型是如何被处理的，以及输入内容被放置到何处。
+			</p>
+		</div>
+			
+	</div>
+	
+	
+</body>
+</html>
+
+
