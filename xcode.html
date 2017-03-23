@@ -71,7 +71,7 @@
 				如果软件对安装包大小非常敏感，可以减少安装包中的指令集。如只支持armv7指令集。不对对于armv7s/arm64指令集设备来说，运行armv7应用是会有一定的性能损失。具体多少目前没有数据。
 			<p>
 				使用命令查看生成包的处理器类型：lipo -info AppName.app/AppName<br>
-				配置Architectures为armv7 arm64，Valid Architectures为arm64 armv7 armv7s<br>
+				配置Architectures为armv7 arm64，Valid Architectures为arm64 armv7 armv7s<br><br>
 				<strong>使用模拟器编译</strong>
 				<li>Build Active Architectures only的debug设置为YES，Architectures in the fat file: AppName.app/AppName are: x86_64</li>
 				<li>Build Active Architectures only的debug设置为NO，Architectures in the fat file: AppName.app/AppName are: i386 x86_64</li><br>
