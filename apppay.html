@@ -74,6 +74,7 @@
 				<li>如果没有校验成功的SKPaymentTransaction，请不要调用[[SKPaymentQueue defaultQueue] finishTransaction:transaction];这样苹果每次有支付的时候把未完成的订单发回来给你，这样我们自己不用维护未校验的base64串和订单号(换手机或异常闪退也不用担心)</li>
 				<li>因为看到猿题库的支付分享，说了越狱手机支付带来的风险（新浪微博也不让越狱用户购买），我们也直接判断了如果手机是越狱的，提示不让购买。</li>
 				<li>服务器验证返回json要好好看，里面有一个products的数组，只有那个数组里面有数据的时候才算真正购买成功，每次有支付完成的时候，通过appStoreReceiptURL获取到的base64串都会发生变化，之前生成好的同一个base64串每次从苹果验证取到的内容都一样。</li>
+				<li>在xcode8.3后发现如果在XCode Capabilities tab没有打开In-App Purchase会报“ Error Domain=SKErrorDomain Code=0 "Cannot connect to iTunes Store"  ”</li>
 			</p>
 			<h4 style="padding-top:12px;">5.发布时选择道具一起进入review</h4>
 			<p>刚开时以为只要把app提交了，这个版本的道具也会一并进入Review。但是当我提交后，进和In-App Purchases发现道具的状态还是”ready for submit”；网上说要把二进制包删除了再提交才会出来一个按钮，把道具加入审核；实际上最新版本在你当前准备提交的app itunes后台，<strong>选择Build的下方，有一个In-App purchases的选项，在那里把自己的道具添加后，再提交就一切正常了</strong>。</p>
