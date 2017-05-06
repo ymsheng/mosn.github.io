@@ -72,8 +72,9 @@
 				<li>每次开始购买的时候先从字典中找有没有相关的商品信息(SKProduct)；没有继续第一步操作，反之从字典中取出SKProduct直接开始第二步。研究了几个大厂的应用基本上都第一步很快（应该是加了缓存）。第二步大家都差不多慢</li>
 				<li>可以把SKMutablePayment中的applicationUsername设置为自己业务中的订单号，这样在返回支付状态的时候也会带回来，我们再和服务器做校验base64串的时候一起发回服务器</li>
 				<li>如果没有校验成功的SKPaymentTransaction，请不要调用[[SKPaymentQueue defaultQueue] finishTransaction:transaction];这样苹果每次有支付的时候把未完成的订单发回来给你，这样我们自己不用维护未校验的base64串和订单号(换手机或异常闪退也不用担心)</li>
-				<li>从appStoreReceiptURL获取到一个receipt的凭证(在不产生新订单的情况下，receipt每次请求都不变)，把这个凭证发给自己服务器去校验，如果服务器拿receipt去苹果服务器验证，返回的内容中在in_app里有我们购买的道具说明此次购买就成功了，就可以finish transaction了。</i>
-				<li>在有些情况下，新的订单支付成功了，但是receipt中没有in_app内容，此时可以调用SKReceiptRefreshRequest做一次刷新receipt.每次refresh后，receipt都会变。</li>
+				<li>从appStoreReceiptURL获取到一个receipt的凭证(在不产生新订单的情况下，receipt每次请求都不变)，把这个凭证发给自己服务器去校验，如果服务器拿receipt再去苹果服务器验证，返回的内容中在in_app里有我们购买的道具说明此次购买就成功了，就可以finish transaction</i>
+				<li>在in_app中有一个transaction_id，请返回器把这个返回后，然后在客户端把这个id对应的transaction关闭。不要轻易关transaction</li>
+				<li>在有些情况下，新的订单支付成功了，但是receipt中没有in_app内容，此时可以调用SKReceiptRefreshRequest做一次刷新receipt.每次refresh后，receipt都会变。所以我们可以每次获取receipt的时候都先刷新一下</li>
 				<li>因为看到猿题库的支付分享，说了越狱手机支付带来的风险（新浪微博也不让越狱用户购买），我们也直接判断了如果手机是越狱的，提示不让购买。</li>
 				<li>服务器验证返回json要好好看，里面有一个products的数组，只有那个数组里面有数据的时候才算真正购买成功，每次有支付完成的时候，通过appStoreReceiptURL获取到的base64串都会发生变化，之前生成好的同一个base64串每次从苹果验证取到的内容都一样。</li>
 				<li>在xcode8.3后发现如果在XCode Capabilities tab没有打开In-App Purchase会报“ Error Domain=SKErrorDomain Code=0 "Cannot connect to iTunes Store"  ”</li>
