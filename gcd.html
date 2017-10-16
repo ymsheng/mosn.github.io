@@ -124,7 +124,21 @@ NSLog(@"------end-----");</code></pre>
     });</code></pre>
 	<h5>前面在异步的并行队列中插入两入block,中间用<strong>dispatch_barrier_async</strong>拦了一下，后面又插入两入block。前两个谁快谁先执行（并行）；当前两个执行完，再执行<strong>dispatch_barrier_async</strong>，最后两在<strong>dispatch_barrier_async</strong>之后并行执行。</h5>
 		</div>
-			
+		<h4 style="padding-top:12px;">5.用信息号做多线程锁</h4>
+		<p>上锁的方式有很多种，synchronized, nslock,POSIX,OSSpinLock等,dispatch_semaphore_t性能也不错</p>	
+		<pre><code>
+dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);
+/*** 
+	DISPATCH_TIME_FOREVER：等待时间
+	wait之后信号量-1，为0
+	*/
+dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+//do something,需要线程安全的
+/**
+*  发送一个信号通知，这时候信号量+1，为1
+*/
+dispatch_semaphore_signal(semaphore);
+		</code></pre>
 	</div>
 	
 	
